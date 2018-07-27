@@ -1,0 +1,6 @@
+spring.profiles.active: create-drop
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
