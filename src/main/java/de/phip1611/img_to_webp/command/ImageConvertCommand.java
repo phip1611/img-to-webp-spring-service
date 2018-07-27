@@ -70,8 +70,12 @@ public class ImageConvertCommand {
         return this.filename + "." + this.fileext.getName();
     }
 
-    public File toFile() {
+    public File getFile() {
         return new File(this.getFullFileName());
+    }
+
+    public File getWebpFile() {
+        return new File(this.getFilename() + ".webp");
     }
 
     private ImageConvertCommand setQuality(byte quality) {

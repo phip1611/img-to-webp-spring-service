@@ -65,6 +65,9 @@ public class ImgToWebPServiceApplicationTests {
         inputs.forEach(input -> {
             ResponseEntity<ImageDto> dto = restTemplate.postForEntity("/convert", input, ImageDto.class);
             Assert.assertEquals(200, dto.getStatusCodeValue());
+            // Die nächste Zeile deckt den fehler ab den ich hatte, dass ich das ursprungsbild im
+            // original wieder rausgegeben habe!
+            Assert.assertNotEquals(input.getBase64String(), dto.getBody().getBase64String());
             Assert.assertTrue(dto.getBody().isSuccess());
         });
     }

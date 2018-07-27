@@ -7,32 +7,44 @@ public class ImageDto {
 
     private boolean success;
 
-    private String base64String;
-
     private byte quality;
 
     private int size;
 
+    private int oldSize;
+
+    private double savingsInPercent;
+
+    private String base64String;
+
     public ImageDto() {
         this.success = true;
         this.size = 0;
+        this.oldSize = 0;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getBase64String() {
-        return base64String;
-    }
-
     public double getQuality() {
         return quality;
     }
 
-    public ImageDto setSize(int size) {
-        this.size = size;
-        return this;
+    public int getSize() {
+        return size;
+    }
+
+    public int getOldSize() {
+        return oldSize;
+    }
+
+    public double getSavingsInPercent() {
+        return this.savingsInPercent;
+    }
+
+    public String getBase64String() {
+        return base64String;
     }
 
     public ImageDto setSuccess(boolean success) {
@@ -45,13 +57,27 @@ public class ImageDto {
         return this;
     }
 
+    public ImageDto setSize(int size) {
+        this.size = size;
+        this.updateSavings();
+        return this;
+    }
+
     public ImageDto setQuality(byte quality) {
         this.quality = quality;
         return this;
     }
 
-    public int getSize() {
-        return size;
+    public ImageDto setOldSize(int oldSize) {
+        this.oldSize = oldSize;
+        this.updateSavings();
+        return this;
+    }
+
+    private void updateSavings() {
+        if (oldSize != 0) {
+            this.savingsInPercent = (1d - ((double)this.size / (double)this.oldSize)) * 100d;
+        }
     }
 
     public static ImageDto failureDto() {

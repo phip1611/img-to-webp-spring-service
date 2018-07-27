@@ -29,6 +29,8 @@ public class ImageServiceImpl implements ImageService {
             System.err.println("Das Temp-Dir \"" + tmpDir + "\" ist nicht vorhanden!");
             return ImageDto.failureDto();
         }
+        System.out.println("Der Spring Img-To-WebP-Service nutzt das Verzeichnis:");
+        System.out.println(tmpDir.toPath());
 
         boolean success = this.writeImageFileToTemp(command, tmpDir);
         if (!success) {
@@ -57,13 +59,14 @@ public class ImageServiceImpl implements ImageService {
                 return ImageDto.failureDto();
             }
 
-            byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.toFile()));
+            byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getWebpFile()));
             if (webpData.length == 0) {
                 System.err.println("Fehler bei der Konvertierung, Zieldatei ist leer!");
             }
             ImageDto dto = new ImageDto()
                     .setQuality(command.getQuality())
                     .setBase64String(Base64.getEncoder().encodeToString(webpData))
+                    .setOldSize(command.getBinaryData().length)
                     .setSize(webpData.length);
 
             return dto;
@@ -78,7 +81,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public boolean writeImageFileToTemp(ImageConvertCommand command, File destination) {
-        File destinationFile = this.getFullFile(destination, command.toFile());
+        File destinationFile = this.getFullFile(destination, command.getFile());
 
         try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
             fos.write(command.getBinaryData());
