@@ -5,9 +5,9 @@ import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.service.impl.ImageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,4 +24,5 @@ public class ImageController {
     public ImageDto convert(@Valid @RequestBody ImageInput input) {
         return this.service.convert(input);
     }
+
 }

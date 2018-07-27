@@ -2,7 +2,6 @@ package de.phip1611.img_to_webp;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
-import de.phip1611.img_to_webp.service.api.ImageService;
 import de.phip1611.img_to_webp.util.ImageType;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -10,8 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,25 +20,24 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.phip1611.img_to_webp.util.ImageType.getTypeByString;
-import static java.util.stream.Collectors.toList;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class ImgToWebPServiceApplicationTests {
 
     @Autowired
-    private ImageService imageService;
-
+    private TestRestTemplate restTemplate;
 
     public ImgToWebPServiceApplicationTests() {
     }
 
     @Test
     public void imageServiceTest() {
+
+
         List<ImageInput> inputs = new ArrayList<>();
         Resource[] imgResources;
         try {
@@ -62,8 +62,11 @@ public class ImgToWebPServiceApplicationTests {
             e.printStackTrace();
         }
 
-        List<Boolean> dtos = inputs.stream().map(imageService::convert).map(ImageDto::isSuccess).filter(b -> !b).collect(toList());
-        Assert.assertEquals(0, dtos.size());
+        inputs.forEach(input -> {
+            ResponseEntity<ImageDto> dto = restTemplate.postForEntity("/convert", input, ImageDto.class);
+            Assert.assertEquals(200, dto.getStatusCodeValue());
+            Assert.assertTrue(dto.getBody().isSuccess());
+        });
     }
 
     private String getFileEnding(String path) {

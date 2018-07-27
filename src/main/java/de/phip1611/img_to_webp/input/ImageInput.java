@@ -1,5 +1,7 @@
 package de.phip1611.img_to_webp.input;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -18,8 +20,7 @@ public class ImageInput {
      * Dateiendung des Bildes.
      */
     @NotEmpty
-    @Min(3)
-    @Max(4)
+    @Length(min = 3, max = 4)
     private String fileExtension;
 
     /**
