@@ -84,6 +84,6 @@ public class ImageDto {
         return new ImageDto()
                 .setSuccess(false)
                 .setQuality((byte)0)
-                .setBase64String(null);
+                .setBase64String("");
     }
 }
