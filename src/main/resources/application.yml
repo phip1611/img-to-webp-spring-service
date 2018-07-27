@@ -1,76 +1,9 @@
 spring:
-  jpa:
-    database: postgresql
-    properties:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-  datasource:
-    url: jdbc:postgresql://localhost:5432/iungo
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
-
-# Auslagern in eine externe Datei geht leider nicht, da @PropertySource nur .properties-Dateien kann
-# ich aber gerne das yaml format nutzen möchte
-initdata:
-  users:
-    - vorname:      Vorname1
-      nachname:     Nachname1
-      benutzername: Benutzername1
-      email:        e1@mail.com
-      roles:
-        - "ROLE_USER"
-        - "ROLE_ADMIN"
-    - vorname:      Vorname2
-      nachname:     Nachname2
-      benutzername: Benutzername2
-      email:        e2@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname3
-      nachname:     Nachname3
-      benutzername: Benutzername3
-      email:        e3@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname4
-      nachname:     Nachname4
-      benutzername: Benutzername4
-      email:        e4@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname5
-      nachname:     Nachname5
-      benutzername: Benutzername5
-      email:        e5@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname6
-      nachname:     Nachname6
-      benutzername: Benutzername6
-      email:        e6@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname7
-      nachname:     Nachname7
-      benutzername: Benutzername7
-      email:        e7@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname8
-      nachname:     Nachname8
-      benutzername: Benutzername8
-      email:        e8@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname9
-      nachname:     Nachname9
-      benutzername: Benutzername9
-      email:        e9@mail.com
-      roles:
-        - "ROLE_USER"
-    - vorname:      Vorname10
-      nachname:     Nachname10
-      benutzername: Benutzername10
-      email:        e10@mail.com
-      roles:
-        - "ROLE_USER"
+  servlet:
+    multipart:
+      # Bilder bis 25mb konvertieren
+      max-request-size: 25MB
+server:
+  # alle anfragen von außen abblocken, das ist nur für andere (Spring) Services
+  # auf dem gleichen Server gedacht
+  address: "localhost"

@@ -58,7 +58,7 @@ public class ImgToWebServiceApplicationTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(inputs);
+        inputs.forEach(imageService::convert);
     }
 
     private String getFileEnding(String path) {

@@ -43,7 +43,7 @@ public class ImageInput {
         return imageType;
     }
 
-    public String getImageBase64M() {
+    public String getImageBase64() {
         return imageBase64M;
     }
 
