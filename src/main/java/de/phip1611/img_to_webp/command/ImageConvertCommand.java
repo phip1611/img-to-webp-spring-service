@@ -3,6 +3,7 @@ package de.phip1611.img_to_webp.command;
 import de.phip1611.img_to_webp.util.Buildable;
 import de.phip1611.img_to_webp.util.ImageType;
 
+import java.io.File;
 import java.util.UUID;
 
 import static de.phip1611.img_to_webp.service.api.ImageService.MAX_FILE_SIZE;
@@ -67,6 +68,10 @@ public class ImageConvertCommand {
      */
     public String getFullFileName() {
         return this.filename + "." + this.fileext.getName();
+    }
+
+    public File toFile() {
+        return new File(this.getFullFileName());
     }
 
     private ImageConvertCommand setQuality(byte quality) {

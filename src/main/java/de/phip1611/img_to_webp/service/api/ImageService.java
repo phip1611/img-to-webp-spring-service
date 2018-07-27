@@ -5,6 +5,7 @@ import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * Image-Service.
@@ -46,6 +47,14 @@ public interface ImageService {
     boolean writeImageFileToTemp(ImageConvertCommand command, File destination);
 
     /**
+     * Holt das eben konvertiere File aus dem Temp-Verzeichnis.
+     *
+     * @param webpFile Konvertiertes Bild im webp Format
+     * @return  Optional<Byte[]> Binärdaten vom konvertieren WebP-Bild
+     */
+    byte[] getConvertedImageFromTemp(File webpFile);
+
+    /**
      * Gibt das Temp-Verzeichnis zurück, in dem Bilder auf dem Server für die Konvertierung zwischengespeichert werden.
      * Wenn das Temp-Verzeichnis der Laufzeitumgebung vorhanden ist, wird versucht darin einen projektspezifischen
      * Ordner anzulegen.
@@ -53,4 +62,24 @@ public interface ImageService {
      * @return Temp-Verzeichnis, in dem Bilder auf dem Server zwischengespeichert werden.
      */
     File createAndGetTempDir();
+
+    /**
+     * Gibt den vollen Datei-System-Pfad zu einer Datei zurück bzw. kombiniert
+     * ein Verzeichnis und eine Datei.
+     *
+     * @param dir Verzeichnis
+     * @param file Datei
+     * @return Komplettes File mit kompletten Pfad.
+     */
+    File getFullFile(File dir, File file);
+
+    /**
+     * Gibt den vollen Datei-System-Pfad zu einer Datei zurück bzw. kombiniert
+     * ein Verzeichnis und eine Datei.
+     *
+     * @param dir Verzeichnis
+     * @param file Datei
+     * @return Komplettes File mit kompletten Pfad.
+     */
+    File getFullFile(File dir, String file);
 }

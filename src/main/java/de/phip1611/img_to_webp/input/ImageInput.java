@@ -12,7 +12,7 @@ public class ImageInput {
     /**
      * Standardqualität für den Converter.
      */
-    public static final byte DEFAULT_WEBP_QUALITY = 87;
+    public static final byte DEFAULT_WEBP_QUALITY = 82;
 
     /**
      * Dateiendung des Bildes.

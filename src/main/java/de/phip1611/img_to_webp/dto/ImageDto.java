@@ -7,23 +7,32 @@ public class ImageDto {
 
     private boolean success;
 
-    private String imageBase64M;
+    private String base64String;
 
     private byte quality;
 
+    private int size;
+
     public ImageDto() {
+        this.success = true;
+        this.size = 0;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getImageBase64M() {
-        return imageBase64M;
+    public String getBase64String() {
+        return base64String;
     }
 
     public double getQuality() {
         return quality;
+    }
+
+    public ImageDto setSize(int size) {
+        this.size = size;
+        return this;
     }
 
     public ImageDto setSuccess(boolean success) {
@@ -31,13 +40,24 @@ public class ImageDto {
         return this;
     }
 
-    public ImageDto setImageBase64M(String imageBase64M) {
-        this.imageBase64M = imageBase64M;
+    public ImageDto setBase64String(String base64String) {
+        this.base64String = base64String;
         return this;
     }
 
     public ImageDto setQuality(byte quality) {
         this.quality = quality;
         return this;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public static ImageDto failureDto() {
+        return new ImageDto()
+                .setSuccess(false)
+                .setQuality((byte)0)
+                .setBase64String(null);
     }
 }

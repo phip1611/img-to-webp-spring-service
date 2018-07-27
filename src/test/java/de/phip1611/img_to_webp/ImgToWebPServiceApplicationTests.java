@@ -1,9 +1,11 @@
 package de.phip1611.img_to_webp;
 
+import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.service.api.ImageService;
 import de.phip1611.img_to_webp.util.ImageType;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.phip1611.img_to_webp.util.ImageType.getTypeByString;
+import static java.util.stream.Collectors.toList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -57,7 +61,9 @@ public class ImgToWebPServiceApplicationTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        inputs.forEach(imageService::convert);
+
+        List<Boolean> dtos = inputs.stream().map(imageService::convert).map(ImageDto::isSuccess).filter(b -> !b).collect(toList());
+        Assert.assertEquals(0, dtos.size());
     }
 
     private String getFileEnding(String path) {
