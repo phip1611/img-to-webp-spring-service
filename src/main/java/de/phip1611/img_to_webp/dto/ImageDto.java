@@ -1,5 +1,8 @@
-package de.phip1611.img_to_web.dto;
+package de.phip1611.img_to_webp.dto;
 
+/**
+ * Ein ImageDTO ist das Endprodukt der Konvertierung und wird an den Nutzer zurück gegeben.
+ */
 public class ImageDto {
 
     private boolean success;

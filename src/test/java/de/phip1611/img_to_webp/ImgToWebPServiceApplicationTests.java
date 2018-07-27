@@ -1,8 +1,8 @@
-package de.phip1611.img_to_web;
+package de.phip1611.img_to_webp;
 
-import de.phip1611.img_to_web.input.ImageInput;
-import de.phip1611.img_to_web.service.api.ImageService;
-import de.phip1611.img_to_web.util.ImageType;
+import de.phip1611.img_to_webp.input.ImageInput;
+import de.phip1611.img_to_webp.service.api.ImageService;
+import de.phip1611.img_to_webp.util.ImageType;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,20 +17,19 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
-import static de.phip1611.img_to_web.util.ImageType.getTypeByString;
+import static de.phip1611.img_to_webp.util.ImageType.getTypeByString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class ImgToWebServiceApplicationTests {
+public class ImgToWebPServiceApplicationTests {
 
     @Autowired
     private ImageService imageService;
 
 
-    public ImgToWebServiceApplicationTests() {
+    public ImgToWebPServiceApplicationTests() {
     }
 
     @Test
@@ -44,13 +43,13 @@ public class ImgToWebServiceApplicationTests {
                 if (imgResource.isFile() && imgResource.isReadable()) {
                     byte[] bytes = IOUtils.toByteArray(imgResource.getInputStream());
 
-                    Optional<ImageType> type = getTypeByString(getFileEnding(imgResource.getFilename()));
-                    if (!type.isPresent()) {
+                    ImageType type = getTypeByString(getFileEnding(imgResource.getFilename()));
+                    if (type == null) {
                         continue;
                     }
                     ImageInput input = new ImageInput()
-                    .setImageType(type.get())
-                    .setImageBase64(Base64.getEncoder().encodeToString(bytes));
+                    .setFileExtension(getFileEnding(imgResource.getFile().toString()))
+                    .setBase64String(Base64.getEncoder().encodeToString(bytes));
 
                     inputs.add(input);
                 }

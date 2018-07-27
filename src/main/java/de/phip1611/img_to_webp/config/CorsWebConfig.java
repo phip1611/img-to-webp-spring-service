@@ -2,7 +2,7 @@
    Copyright ©: Philipp Schuster (2017)
    https://phip1611.de / phip1611@gmail.com
 */
-package de.phip1611.img_to_web.config;
+package de.phip1611.img_to_webp.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
