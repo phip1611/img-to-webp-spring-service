@@ -49,4 +49,19 @@ public class ProcessExecServiceTest {
         Assert.assertTrue(x.isSuccess());
     }
 
+    // brauche ich vor allem um zu schauen ob richtige Ausgabe-Meldungen kommen
+    @Test
+    public void testBullshitCommandOnThisSystem() {
+        String command = "bullshit";
+        ProcessExecResult x = service.exec(command, System.getProperty("user.dir"));
+        x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
+        if (x.isSuccess()) {
+            System.out.println("YOU cool motherfucker, amazing!");
+            // das ist eh nur ein Test um zu schauen ob bei einem falschen Kommando die richtigen Debugmeldungen kommen
+            // unwahrscheinlich dass jemand dieses Kommando auf seiner Maschine besitzt :D
+        } else {
+            Assert.assertFalse(x.isSuccess());
+        }
+    }
+
 }

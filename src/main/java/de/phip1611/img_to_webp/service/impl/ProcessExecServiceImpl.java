@@ -28,23 +28,29 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         Optional<String> stdErr = Optional.empty();
         Optional<String> stackTrace = Optional.empty();
 
+        Process process = null;
         try {
             System.out.println("Executing: '" + command + "' in '" + workingDirectory.getPath() + "'");
-            Process process = runtime.exec(command, null, workingDirectory);
+            process = runtime.exec(command, null, workingDirectory);
             int code = process.waitFor(); // Warten bis Prozess durchgelaufen ist, dannach geht es weiter.
-            stdOut  = this.stdToString(process.getInputStream());
-            stdErr  = this.stdToString(process.getErrorStream());
             if (code != 0) {
                 System.err.println("Execution failed, Code: " + code);
             } else {
                 success = true;
             }
         } catch (IOException e) {
-            System.err.println("Fehler beim ausführen!");
+            System.err.println("Failure during execution!");
             stackTrace = Optional.of(e.getMessage());
         } catch (InterruptedException e) {
-            System.err.println("Fehler beim Warten auf den Prozess!");
+            System.err.println("Failure during waiting for process to finish!!");
             stackTrace = Optional.of(e.getMessage());
+        } finally {
+            // hier unten erst die jeweiligen Ausgaben holen
+            // da wir sonst das oben für den try und jeden catch block einzeln machen müsssten!
+            if (process != null) {
+                stdOut  = this.stdToString(process.getInputStream());
+                stdErr  = this.stdToString(process.getErrorStream());
+            }
         }
 
         return new ProcessExecResult(
