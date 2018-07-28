@@ -61,21 +61,12 @@ public class ImageConvertCommand {
         return quality;
     }
 
-    /**
-     * Gibt Dateinamen mit Extension aus.
-     *
-     * @return Dateiname mit Extension
-     */
-    public String getFullFileName() {
-        return this.filename + "." + this.fileext.getName();
-    }
-
     public File getFile() {
-        return new File(this.getFullFileName());
+        return new File(this.filename + "." + this.fileext.getName());
     }
 
-    public File getWebpFile() {
-        return new File(this.getFilename() + ".webp");
+    public File getOutFile() {
+        return new File(this.getFilename() + "-out.webp");
     }
 
     private ImageConvertCommand setQuality(byte quality) {

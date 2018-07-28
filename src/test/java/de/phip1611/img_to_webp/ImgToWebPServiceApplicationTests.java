@@ -33,7 +33,6 @@ public class ImgToWebPServiceApplicationTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     public ImgToWebPServiceApplicationTests() {
         this.base64Decoder = Base64.getDecoder();
     }
@@ -76,7 +75,6 @@ public class ImgToWebPServiceApplicationTests {
             // original wieder rausgegeben habe!
             Assert.assertNotEquals(input.getBase64String(), dto.getBase64String());
             Assert.assertTrue(base64Decoder.decode(dto.getBase64String()).length > 10);
-            Assert.assertTrue(response.getBody().isSuccess());
         });
     }
 

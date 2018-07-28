@@ -5,7 +5,10 @@ import de.phip1611.img_to_webp.command.ImageConvertCommand;
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.service.api.ImageService;
+import de.phip1611.img_to_webp.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.util.ImageType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,6 +17,13 @@ import java.util.Base64;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+    private final ProcessExecService processExecService;
+
+    @Autowired
+    public ImageServiceImpl(ProcessExecService processExecService) {
+        this.processExecService = processExecService;
+    }
 
     @Override
     public ImageDto convert(ImageInput input) {
@@ -25,63 +35,34 @@ public class ImageServiceImpl implements ImageService {
 
         File tmpDir = this.createAndGetTempDir();
         if (!tmpDir.isDirectory()) {
-            System.err.println("Das Temp-Dir \"" + tmpDir + "\" ist nicht vorhanden!");
+            System.err.println("The Temp-Dir \"" + tmpDir + "\" is not available!");
             return ImageDto.failureDto();
         }
 
-        System.out.println("Der Spring Img-To-WebP-Service nutzt das Temp-Verzeichnis:");
+        System.out.println("The service is using the Temp-Dir:");
         System.out.println(tmpDir.toPath());
 
-        System.out.print("Schreibe Datei \"" + command.getFullFileName() + "\" in Temp-Verzeichnis: ");
+        System.out.print("Write file \"" + command.getFile().getPath() + "\" to Temp-Dir: ");
         boolean success = this.writeImageFileToTemp(command, tmpDir);
         if (!success) {
-            System.err.print("Die Datei konnte nicht ins Temp-Verzeichnis geschrieben werden!\n");
+            System.err.print("File could not be written to Temp-Dir!\n");
             return ImageDto.failureDto();
         } else {
             System.out.print("Erfolg\n");
         }
 
-        String execCommand = "cwebp -q ";
-        execCommand += command.getQuality();
-        execCommand += " " + command.getFullFileName();
-        execCommand += " -o " + command.getFilename() + ".webp";
-        System.out.println("Executing: \"" + execCommand + "\" in Temp-Verzeichnis");
+        String execCommand = this.buildCommandString(command);
 
-        Process process = null;
-        int exidCode;
-        try {
-            process = Runtime.getRuntime().exec(execCommand, null, tmpDir);
-            exidCode = process.waitFor();
-        } catch (IOException e) {
-            System.out.println("Fehlschlag, konnte Kommando nicht ausführen.");
-            e.printStackTrace();
-            return ImageDto.failureDto();
-        } catch (InterruptedException e) {
-            System.out.println("Fehlschlag, konnte nicht auf Prozess warten.");
-            e.printStackTrace();
+        ProcessExecResult x = this.processExecService.exec(execCommand, tmpDir);
+        if (!x.isSuccess()) {
+            System.err.println("Fehlschlag!");
+            x.print();
             return ImageDto.failureDto();
         }
 
-        String stdOut = this.getOutStreamContent(process.getInputStream());
-        String stdErr = this.getOutStreamContent(process.getErrorStream());
-
-        System.out.println("Der Prozess gab folgendes zurück:");
-        System.out.println("stdOut:");
-        System.out.println(stdOut);
-        System.out.println("---");
-        System.out.println("stdErr:");
-        System.out.println(stdErr);
-
-        if (exidCode != 0) {
-            System.out.println("Der Prozess gibt einen Fehler als Rückmeldung: EXIT_CODE=" + exidCode);
-            return ImageDto.failureDto();
-        } else {
-            System.out.println("Erfolgreich konvertiert.");
-        }
-
-        byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getWebpFile()));
+        byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getOutFile()));
         if (webpData.length == 0) {
-            System.err.println("Fehler bei der Konvertierung, Zieldatei ist leer!");
+            System.err.println("Error during conversion, Target-File is empty!");
             return ImageDto.failureDto();
         }
 
@@ -123,7 +104,7 @@ public class ImageServiceImpl implements ImageService {
         if (tmpDir.isDirectory() && !tmpDirApp.isDirectory()) {
             boolean success = tmpDirApp.mkdir();
             if (!success) {
-                throw new IllegalStateException("Konnte kein Verzeichnis im TMP Dir anlegen!");
+                throw new IllegalStateException("Could not create directory in Temp-ir!");
             }
         }
         return tmpDirApp;
@@ -140,17 +121,20 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public String buildCommandString(ImageConvertCommand convertCommand) {
+        String execCommand = "cwebp -q ";
+        execCommand += convertCommand.getQuality();
+        execCommand += " " + convertCommand.getFile().getPath();
+        execCommand += " -o " + convertCommand.getOutFile().toPath();
+        return execCommand;
+    }
+
+    @Override
     public ImageConvertCommand inputToCommand(ImageInput input) {
         return ImageConvertCommand.getBuilder()
                 .setBinaryData(Base64.getDecoder().decode(input.getBase64String().getBytes()))
                 .setFileext(ImageType.getTypeByString(input.getFileExtension()))
                 .setQuality(input.getQuality())
                 .build();
-    }
-
-    private String getOutStreamContent(InputStream inputStream) {
-        BufferedReader stdOutReader = new BufferedReader(new
-                InputStreamReader(inputStream));
-        return stdOutReader.lines().reduce(String::concat).orElse("");
     }
 }

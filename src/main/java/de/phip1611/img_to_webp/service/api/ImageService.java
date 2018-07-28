@@ -82,4 +82,12 @@ public interface ImageService {
      * @return Komplettes File mit kompletten Pfad.
      */
     File getFullFile(File dir, String file);
+
+    /**
+     * Baut den String auf, der als Kommando ausgeführt das Bild konvertiert.
+     *
+     * @param convertCommand Konvertier-Kommando
+     * @return Kommando-String
+     */
+    String buildCommandString(ImageConvertCommand convertCommand);
 }
