@@ -29,20 +29,16 @@ public class ProcessExecServiceTest {
     @Test
     public void testHasCwebpCommandOnThisSystem() {
         ProcessExecResult x = service.exec("cwebp -version", System.getProperty("user.dir"));
-        if (!x.isSuccess()) {
-            x.print();
-            Assert.fail();
-        }
+        x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
+        Assert.assertTrue(x.isSuccess());
     }
 
     @Test
     public void testCanExecuteAnyCommandOnThisSystem() {
         String command = defaultCommandForSystem + " " + defaultCommandForSystem;
         ProcessExecResult x = service.exec(command, System.getProperty("user.dir"));
-        if (!x.isSuccess()) {
-            x.print();
-            Assert.fail();
-        }
+        x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
+        Assert.assertTrue(x.isSuccess());
     }
 
 }
