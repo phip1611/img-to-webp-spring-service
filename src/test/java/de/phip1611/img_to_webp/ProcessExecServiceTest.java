@@ -13,11 +13,12 @@ public class ProcessExecServiceTest {
 
     private final boolean runsOnWindows;
 
-    private final String defaultCommandForSystem;
+    // serves as a default, always available command on (nearly) all systems
+    private final String whichCommandForSystem;
 
     public ProcessExecServiceTest() {
         this.runsOnWindows = System.getProperty("os.name").toLowerCase().contains("windows");
-        this.defaultCommandForSystem = this.runsOnWindows ? "where" : "which";
+        this.whichCommandForSystem = this.runsOnWindows ? "where" : "which";
         // else assume we are on a unix system (that has which installed)
     }
 
@@ -27,7 +28,14 @@ public class ProcessExecServiceTest {
     }
 
     @Test
-    public void testHasCwebpCommandOnThisSystem() {
+    public void testHasCwebpCommandOnThisSystem1() {
+        ProcessExecResult x = service.exec(whichCommandForSystem + " cwebp", System.getProperty("user.dir"));
+        x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
+        Assert.assertTrue(x.isSuccess());
+    }
+
+    @Test
+    public void testHasCwebpCommandOnThisSystem2() {
         ProcessExecResult x = service.exec("cwebp -version", System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
         Assert.assertTrue(x.isSuccess());
@@ -35,7 +43,7 @@ public class ProcessExecServiceTest {
 
     @Test
     public void testCanExecuteAnyCommandOnThisSystem() {
-        String command = defaultCommandForSystem + " " + defaultCommandForSystem;
+        String command = whichCommandForSystem + " " + whichCommandForSystem;
         ProcessExecResult x = service.exec(command, System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
         Assert.assertTrue(x.isSuccess());
