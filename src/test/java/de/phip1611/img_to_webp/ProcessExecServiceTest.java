@@ -29,8 +29,10 @@ public class ProcessExecServiceTest {
     @Test
     public void testHasCwebpCommandOnThisSystem() {
         ProcessExecResult x = service.exec("cwebp -version", System.getProperty("user.dir"));
-        Assert.assertTrue(x.isSuccess());
-        Assert.assertFalse(x.getStdOut().isEmpty());
+        if (!x.isSuccess()) {
+            x.print();
+            Assert.fail();
+        }
     }
 
     @Test

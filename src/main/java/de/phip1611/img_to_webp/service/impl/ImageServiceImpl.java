@@ -35,17 +35,17 @@ public class ImageServiceImpl implements ImageService {
 
         File tmpDir = this.createAndGetTempDir();
         if (!tmpDir.isDirectory()) {
-            System.err.println("Das Temp-Dir \"" + tmpDir + "\" ist nicht vorhanden!");
+            System.err.println("The Temp-Dir \"" + tmpDir + "\" is not available!");
             return ImageDto.failureDto();
         }
 
-        System.out.println("Der Spring Img-To-WebP-Service nutzt das Temp-Verzeichnis:");
+        System.out.println("The service is using the Temp-Dir:");
         System.out.println(tmpDir.toPath());
 
-        System.out.print("Schreibe Datei \"" + command.getFile().getPath() + "\" in Temp-Verzeichnis: ");
+        System.out.print("Write file \"" + command.getFile().getPath() + "\" to Temp-Dir: ");
         boolean success = this.writeImageFileToTemp(command, tmpDir);
         if (!success) {
-            System.err.print("Die Datei konnte nicht ins Temp-Verzeichnis geschrieben werden!\n");
+            System.err.print("File could not be written to Temp-Dir!\n");
             return ImageDto.failureDto();
         } else {
             System.out.print("Erfolg\n");
@@ -62,7 +62,7 @@ public class ImageServiceImpl implements ImageService {
 
         byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getOutFile()));
         if (webpData.length == 0) {
-            System.err.println("Fehler bei der Konvertierung, Zieldatei ist leer!");
+            System.err.println("Error during conversion, Target-File is empty!");
             return ImageDto.failureDto();
         }
 
@@ -104,7 +104,7 @@ public class ImageServiceImpl implements ImageService {
         if (tmpDir.isDirectory() && !tmpDirApp.isDirectory()) {
             boolean success = tmpDirApp.mkdir();
             if (!success) {
-                throw new IllegalStateException("Konnte kein Verzeichnis im TMP Dir anlegen!");
+                throw new IllegalStateException("Could not create directory in Temp-ir!");
             }
         }
         return tmpDirApp;
@@ -136,11 +136,5 @@ public class ImageServiceImpl implements ImageService {
                 .setFileext(ImageType.getTypeByString(input.getFileExtension()))
                 .setQuality(input.getQuality())
                 .build();
-    }
-
-    private String getOutStreamContent(InputStream inputStream) {
-        BufferedReader stdOutReader = new BufferedReader(new
-                InputStreamReader(inputStream));
-        return stdOutReader.lines().reduce(String::concat).orElse("");
     }
 }
