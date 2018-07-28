@@ -7,6 +7,12 @@ Das Kommunikationsformat der Bild-Dateien ist Base64.
 
 Auf dem Host-System muss "cwebp", der WebP-Compiler, installiert sein.
 
+## Build
+### Master
+[![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=master)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
+### Dev
+[![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=dev)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
+
 ## Schnittstelle
 ### Input
 ```
@@ -17,7 +23,7 @@ Auf dem Host-System muss "cwebp", der WebP-Compiler, installiert sein.
 }
 ```
 
-###Output
+### Output
 ```
 {
     "success": boolean;
