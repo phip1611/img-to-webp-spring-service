@@ -32,6 +32,7 @@ public class ProcessExecServiceTest {
         ProcessExecResult x = service.exec(whichCommandForSystem + " cwebp", System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
         Assert.assertTrue(x.isSuccess());
+        Assert.assertFalse(x.getStdOut().isEmpty()); // Unix gibt "" zurück, wenn es bspw cwebp nicht gibt
     }
 
     @Test

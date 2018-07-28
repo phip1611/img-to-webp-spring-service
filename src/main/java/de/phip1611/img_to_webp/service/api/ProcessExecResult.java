@@ -10,15 +10,14 @@ public class ProcessExecResult {
 
     private final String stackTrace;
 
-    public ProcessExecResult(boolean success, String stdOut, String stdErr, String stackTrace) {
+    private final int exitCode;
+
+    public ProcessExecResult(boolean success, String stdOut, String stdErr, String stackTrace, int exitCode) {
         this.success = success;
         this.stdOut = stdOut;
         this.stdErr = stdErr;
         this.stackTrace = stackTrace;
-    }
-
-    public ProcessExecResult(boolean success, String stdOut, String stdErr) {
-       this(success, stdOut, stdErr, "");
+        this.exitCode = exitCode;
     }
 
     public boolean isSuccess() {
@@ -37,6 +36,10 @@ public class ProcessExecResult {
         return stackTrace;
     }
 
+    public int getExitCode() {
+        return exitCode;
+    }
+
     public void print() {
         if (this.success) {
             System.out.println(this.toString());
@@ -49,6 +52,7 @@ public class ProcessExecResult {
     public String toString() {
         return "ProcessExecResult{" +
                 "success=" + success +
+                ", exitCode='" + exitCode + '\'' +
                 ", stdOut='" + stdOut + '\'' +
                 ", stdErr='" + stdErr + '\'' +
                 ", stackTrace='" + stackTrace + '\'' +

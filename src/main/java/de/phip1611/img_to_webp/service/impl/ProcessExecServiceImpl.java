@@ -24,6 +24,7 @@ public class ProcessExecServiceImpl implements ProcessExecService {
     @Override
     public ProcessExecResult exec(String command, File workingDirectory) {
         boolean success = false;
+        int exitCode = -1;
         Optional<String> stdOut = Optional.empty();
         Optional<String> stdErr = Optional.empty();
         Optional<String> stackTrace = Optional.empty();
@@ -32,9 +33,9 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         try {
             System.out.println("Executing: '" + command + "' in '" + workingDirectory.getPath() + "'");
             process = runtime.exec(command, null, workingDirectory);
-            int code = process.waitFor(); // Warten bis Prozess durchgelaufen ist, dannach geht es weiter.
-            if (code != 0) {
-                System.err.println("Execution failed, Code: " + code);
+            exitCode = process.waitFor(); // Warten bis Prozess durchgelaufen ist, dannach geht es weiter.
+            if (exitCode != 0) {
+                System.err.println("Execution failed, Code: " + exitCode);
             } else {
                 success = true;
             }
@@ -57,7 +58,8 @@ public class ProcessExecServiceImpl implements ProcessExecService {
                 success,
                 stdOut.orElse(""),
                 stdErr.orElse(""),
-                stackTrace.orElse("")
+                stackTrace.orElse(""),
+                exitCode
         );
     }
 
