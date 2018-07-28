@@ -1,11 +1,8 @@
 # Image to WebP Spring Service
 
-Das ist ein mit Spring Boot ersteller REST-Service, der jpeg, png, tiff, und webp Bilder annimmt 
-und anhand eines Qualitätsparameters (1 - 100) eine konvertierte WebP-Datei zurück gibt.
+This is a REST-Service created with Java and Spring. The service takes images (jpeg, png, tiff, webp) and converts them to webp with a desired quality parameter (1-100). The coding for the communication of the images is base64.
 
-Das Kommunikationsformat der Bild-Dateien ist Base64.
-
-Auf dem Host-System muss "cwebp", der WebP-Compiler, installiert sein.
+You need to install "cwebp" on the Host-System that is running this service. 
 
 ## Build
 ### Master
@@ -17,9 +14,9 @@ Auf dem Host-System muss "cwebp", der WebP-Compiler, installiert sein.
 ### Input
 ```
 {
-    "fileExtension": string; // bspw. "jpeg"
+    "fileExtension": string; // e.g. "jpeg"
     "base64String": string;
-    "quality": integer; // 1 - 100; Default-Wert ist 82
+    "quality": integer; // 1 - 100; Default-Value is 82
 }
 ```
 
@@ -38,4 +35,4 @@ Auf dem Host-System muss "cwebp", der WebP-Compiler, installiert sein.
 ## Bauen und starten
 - `git clone`
 - `mvn clean install`
-- `cd target && java -jar ....jar` (startet standardmäßig auf Port 8080; ändern bspw. über `-Dserver.port=1337`)
+- `cd target && java -jar ....jar` (starts by default on Port 8080; change for example with `-Dserver.port=1337` (or any other spring configuration method you like)
