@@ -5,7 +5,10 @@ import de.phip1611.img_to_webp.command.ImageConvertCommand;
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.service.api.ImageService;
+import de.phip1611.img_to_webp.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.util.ImageType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,6 +17,13 @@ import java.util.Base64;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+    private final ProcessExecService processExecService;
+
+    @Autowired
+    public ImageServiceImpl(ProcessExecService processExecService) {
+        this.processExecService = processExecService;
+    }
 
     @Override
     public ImageDto convert(ImageInput input) {
@@ -32,7 +42,7 @@ public class ImageServiceImpl implements ImageService {
         System.out.println("Der Spring Img-To-WebP-Service nutzt das Temp-Verzeichnis:");
         System.out.println(tmpDir.toPath());
 
-        System.out.print("Schreibe Datei \"" + command.getFullFileName() + "\" in Temp-Verzeichnis: ");
+        System.out.print("Schreibe Datei \"" + command.getFile().getPath() + "\" in Temp-Verzeichnis: ");
         boolean success = this.writeImageFileToTemp(command, tmpDir);
         if (!success) {
             System.err.print("Die Datei konnte nicht ins Temp-Verzeichnis geschrieben werden!\n");
@@ -41,36 +51,16 @@ public class ImageServiceImpl implements ImageService {
             System.out.print("Erfolg\n");
         }
 
-        String execCommand = "cwebp -q ";
-        execCommand += command.getQuality();
-        execCommand += " " + command.getFullFileName();
-        execCommand += " -o " + command.getFilename() + ".webp";
-        System.out.println("Executing: \"" + execCommand + "\" in Temp-Verzeichnis");
+        String execCommand = this.buildCommandString(command);
 
-        Process process = null;
-        int exidCode;
-        try {
-            process = Runtime.getRuntime().exec(execCommand, null, tmpDir);
-            exidCode = process.waitFor();
-        } catch (IOException e) {
-            System.out.println("Fehlschlag, konnte Kommando nicht ausführen.");
-            e.printStackTrace();
-            return ImageDto.failureDto();
-        } catch (InterruptedException e) {
-            System.out.println("Fehlschlag, konnte nicht auf Prozess warten.");
-            e.printStackTrace();
+        ProcessExecResult x = this.processExecService.exec(execCommand, tmpDir);
+        if (!x.isSuccess()) {
+            System.err.println("Fehlschlag!");
+            x.print();
             return ImageDto.failureDto();
         }
 
-        if (exidCode != 0) {
-            System.out.println("Der Prozess gibt einen Fehler als Rückmeldung: EXIT_CODE=" + exidCode);
-            return ImageDto.failureDto();
-        } else {
-            System.out.println("Erfolgreich konvertiert.");
-            System.out.println(this.getOutStreamContent(process.getErrorStream()));
-        }
-
-        byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getWebpFile()));
+        byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getOutFile()));
         if (webpData.length == 0) {
             System.err.println("Fehler bei der Konvertierung, Zieldatei ist leer!");
             return ImageDto.failureDto();
@@ -128,6 +118,15 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public File getFullFile(File dir, String file) {
         return this.getFullFile(dir, new File(file));
+    }
+
+    @Override
+    public String buildCommandString(ImageConvertCommand convertCommand) {
+        String execCommand = "cwebp -q ";
+        execCommand += convertCommand.getQuality();
+        execCommand += " " + convertCommand.getFile().getPath();
+        execCommand += " -o " + convertCommand.getOutFile().toPath();
+        return execCommand;
     }
 
     @Override
