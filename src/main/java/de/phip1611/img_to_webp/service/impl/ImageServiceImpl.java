@@ -62,21 +62,12 @@ public class ImageServiceImpl implements ImageService {
             return ImageDto.failureDto();
         }
 
-        String stdOut = this.getOutStreamContent(process.getInputStream());
-        String stdErr = this.getOutStreamContent(process.getErrorStream());
-
-        System.out.println("Der Prozess gab folgendes zurück:");
-        System.out.println("stdOut:");
-        System.out.println(stdOut);
-        System.out.println("---");
-        System.out.println("stdErr:");
-        System.out.println(stdErr);
-
         if (exidCode != 0) {
             System.out.println("Der Prozess gibt einen Fehler als Rückmeldung: EXIT_CODE=" + exidCode);
             return ImageDto.failureDto();
         } else {
             System.out.println("Erfolgreich konvertiert.");
+            System.out.println(this.getOutStreamContent(process.getErrorStream()));
         }
 
         byte[] webpData = this.getConvertedImageFromTemp(this.getFullFile(tmpDir, command.getWebpFile()));
