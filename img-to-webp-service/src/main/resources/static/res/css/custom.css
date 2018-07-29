@@ -1,0 +1,23 @@
+.jumbotron {
+    margin-top: 2.5rem;
+}
+
+section {
+    min-height: 450px;
+}
+
+.margin-top {
+    margin: 100px;
+}
+
+#input-quality-visualizer {
+    display: inline-block;
+    text-align: center;
+    line-height: 2.3em;
+    width: 2.3em;
+    font-size: 1.3em;
+    background-color: #eee;
+    border-radius: 5px;
+    font-weight: 500;
+    vertical-align: text-bottom;
+}
