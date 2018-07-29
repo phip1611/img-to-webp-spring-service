@@ -11,6 +11,3 @@ before_install:
 cache:
   directories:
     - $HOME/.m2
-
-script:
-  - mvn clean install
