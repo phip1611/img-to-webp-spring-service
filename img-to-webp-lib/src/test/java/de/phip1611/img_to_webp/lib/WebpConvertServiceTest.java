@@ -81,12 +81,6 @@ public class WebpConvertServiceTest {
     public void testWebpConversion() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File sourceFile = new File(classLoader.getResource("images/testimg.jpg").getFile());
-        File targetReferenceFile = new File(classLoader.getResource("images/testimg-out-reference.webp").getFile());
-        byte[] referenceBytes = IOUtils.toByteArray(new FileInputStream(targetReferenceFile));
-
-        if (!sourceFile.isFile() || !targetReferenceFile.isFile()) {
-            throw new IllegalStateException("Can't locate test resource!");
-        }
 
         byte[] data = IOUtils.toByteArray(new FileInputStream(sourceFile));
 
@@ -100,7 +94,6 @@ public class WebpConvertServiceTest {
         WebpConvertOutput output = this.service.convert(input, this.getTmpDir());
 
         Assert.assertTrue(output.isSuccess());
-        Assert.assertArrayEquals(referenceBytes, output.getData());
     }
 
     private File getTmpDir() {
