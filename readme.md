@@ -10,8 +10,9 @@ In additional this repository provides a REST-Service created with Java and Spri
 ### Dev
 [![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=dev)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
 
-## Schnittstelle
-### Input
+## REST-Interface
+
+### Input: `POST-Request` to `/convert`
 ```
 {
     "fileExtension": string; // e.g. "jpeg"
@@ -20,7 +21,7 @@ In additional this repository provides a REST-Service created with Java and Spri
 }
 ```
 
-### Output
+### Output: `Response` from `/convert`
 ```
 {
     "success": boolean;
