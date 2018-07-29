@@ -50,9 +50,21 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         } finally {
             // hier unten erst die jeweiligen Ausgaben holen
             // da wir sonst das oben für den try und jeden catch block einzeln machen müsssten!
-            if (process != null) {
-                stdOut  = this.stdToString(process.getInputStream());
-                stdErr  = this.stdToString(process.getErrorStream());
+            stdOut  = this.stdToString(process.getInputStream());
+            stdErr  = this.stdToString(process.getErrorStream());
+
+            // in some cases (for example when running webp)
+            // the output lands in stdErr even if everything was successfull
+            // at least on windows
+            // therefore let's try the following (swap)
+            // not really a bug but it's confusing
+            if (exitCode == 0) {
+                if (!stdOut.isPresent()) {
+                    if (stdErr.isPresent()) {
+                        stdOut = stdErr;
+                        stdErr = Optional.empty();
+                    }
+                }
             }
         }
 
