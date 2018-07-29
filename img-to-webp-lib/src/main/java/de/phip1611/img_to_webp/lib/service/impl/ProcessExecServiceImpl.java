@@ -1,13 +1,12 @@
-package de.phip1611.img_to_webp.service.impl;
+package de.phip1611.img_to_webp.lib.service.impl;
 
-import de.phip1611.img_to_webp.service.api.ProcessExecResult;
-import de.phip1611.img_to_webp.service.api.ProcessExecService;
-import org.springframework.stereotype.Service;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
+import de.phip1611.img_to_webp.lib.service.api.RuntimeEnvHelper;
 
 import java.io.*;
 import java.util.Optional;
 
-@Service
 public class ProcessExecServiceImpl implements ProcessExecService {
 
     private final Runtime runtime;
@@ -61,6 +60,63 @@ public class ProcessExecServiceImpl implements ProcessExecService {
                 stackTrace.orElse(""),
                 exitCode
         );
+    }
+
+    @Override
+    public boolean commandIsAvailable(String command) {
+        command = command.trim();
+        boolean isAllowed = this.checkTestCommandAllowed(command);
+        if (!isAllowed) {
+            System.err.println("Command not allowed for testing! A-z, 0-9, no spaces, no &&!");
+            return false;
+        }
+
+        String someDir = System.getProperty("user.dir");
+        if (someDir == null) {
+            someDir = System.getProperty("java.io.tmpdir");
+            if (someDir == null) {
+                System.err.println("Can't retrieve any directory on the system to run a command in!");
+            }
+            return false;
+        }
+
+        File someDirFile = new File(someDir);
+        if (!someDirFile.isDirectory()) {
+            System.err.println("Can't retrieve any directory on the system to run a command in!");
+            return false;
+        }
+
+        // will be e.g. "which which", "which webp", "where whatever" (where on Windows)
+        String commandToExecute = RuntimeEnvHelper.getInstance().getWhichForMachine() + " " + command;
+        ProcessExecResult result = this.exec(
+                commandToExecute,
+                someDirFile
+        );
+
+        if (result.isSuccess()) {
+            System.out.println("Command is available!");
+        } else {
+            System.out.println("Command is NOT available!");
+        }
+        result.print();
+
+        return result.isSuccess();
+    }
+
+    /**
+     * Validates if the command that should be checked on this machine is
+     * a command without any parameters, e.g. no "rm -rf ..." but only "rm"
+     * @param command
+     * @return
+     */
+    private boolean checkTestCommandAllowed(String command) {
+        if (command == null) {
+            return false;
+        }
+        if (command.length() < 1 || command.length() > 10) {
+            return false;
+        }
+        return command.matches("(([A-z])*([0-9])*)*");
     }
 
     private Optional<String> stdToString(InputStream is) {

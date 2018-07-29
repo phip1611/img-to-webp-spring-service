@@ -1,13 +1,15 @@
-package de.phip1611.img_to_webp;
+package de.phip1611.img_to_webp.lib;
 
-import de.phip1611.img_to_webp.service.api.ProcessExecService;
-import de.phip1611.img_to_webp.service.api.ProcessExecResult;
-import de.phip1611.img_to_webp.service.impl.ProcessExecServiceImpl;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
+import de.phip1611.img_to_webp.lib.service.impl.ProcessExecServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProcessExecServiceTest {
+import java.util.UUID;
+
+public class ProcessExecServiceUnitTest {
 
     private ProcessExecService service;
 
@@ -16,7 +18,7 @@ public class ProcessExecServiceTest {
     // serves as a default, always available command on (nearly) all systems
     private final String whichCommandForSystem;
 
-    public ProcessExecServiceTest() {
+    public ProcessExecServiceUnitTest() {
         this.runsOnWindows = System.getProperty("os.name").toLowerCase().contains("windows");
         this.whichCommandForSystem = this.runsOnWindows ? "where" : "which";
         // else assume we are on a unix system (that has which installed)
@@ -63,6 +65,23 @@ public class ProcessExecServiceTest {
         } else {
             Assert.assertFalse(x.isSuccess());
         }
+    }
+
+    @Test
+    public void testCommandIsAvailable() {
+        var x = service.commandIsAvailable(this.whichCommandForSystem);
+        Assert.assertTrue(x);
+    }
+
+    @Test
+    public void testMalformedCommandIsAvailable() {
+        // Command is malformed
+        var x = service.commandIsAvailable(UUID.randomUUID().toString());
+        Assert.assertFalse(x);
+
+        // Command is malformed
+        x = service.commandIsAvailable(this.whichCommandForSystem + " && " + this.whichCommandForSystem);
+        Assert.assertFalse(x);
     }
 
 }

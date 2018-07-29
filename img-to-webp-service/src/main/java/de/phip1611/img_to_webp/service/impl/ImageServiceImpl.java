@@ -4,14 +4,16 @@ package de.phip1611.img_to_webp.service.impl;
 import de.phip1611.img_to_webp.command.ImageConvertCommand;
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.service.api.ImageService;
-import de.phip1611.img_to_webp.service.api.ProcessExecResult;
-import de.phip1611.img_to_webp.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.util.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
