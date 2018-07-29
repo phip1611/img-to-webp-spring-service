@@ -61,6 +61,7 @@ public class WebsiteController {
                                    @RequestParam("quality") int quality,
                                    HttpServletResponse response) throws IOException {
         response.setContentType("image/webp");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
 
         String[] split = file.getContentType().split("/");
         String fileExt = split[split.length - 1];
