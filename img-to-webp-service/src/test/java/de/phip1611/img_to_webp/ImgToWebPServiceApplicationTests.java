@@ -2,7 +2,6 @@ package de.phip1611.img_to_webp;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
-import de.phip1611.img_to_webp.util.ImageType;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,8 +19,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
-import static de.phip1611.img_to_webp.util.ImageType.getTypeByString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,10 +45,6 @@ public class ImgToWebPServiceApplicationTests {
                 if (imgResource.isFile() && imgResource.isReadable()) {
                     byte[] bytes = IOUtils.toByteArray(imgResource.getInputStream());
 
-                    ImageType type = getTypeByString(getFileEnding(imgResource.getFilename()));
-                    if (type == null) {
-                        continue;
-                    }
                     ImageInput input = new ImageInput()
                     .setFileExtension(getFileEnding(imgResource.getFile().toString()))
                     .setBase64String(Base64.getEncoder().encodeToString(bytes));

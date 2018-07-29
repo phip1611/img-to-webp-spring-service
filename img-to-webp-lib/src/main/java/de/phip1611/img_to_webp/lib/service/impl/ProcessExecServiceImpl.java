@@ -1,12 +1,15 @@
 package de.phip1611.img_to_webp.lib.service.impl;
 
-import de.phip1611.img_to_webp.lib.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.api.metadata.ProcessExecResult;
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.lib.service.api.RuntimeEnvHelper;
 
 import java.io.*;
 import java.util.Optional;
 
+/**
+ * {@inheritDoc}
+ */
 public class ProcessExecServiceImpl implements ProcessExecService {
 
     private final Runtime runtime;

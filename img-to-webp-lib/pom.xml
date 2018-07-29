@@ -23,6 +23,13 @@
             <!-- Kommt aus spring-boot-starter-test, aber ich möchte das hier vorerst auf junit 4
              festsetzen, damit nicht irgendwann junit 5 rein kommt! -->
         </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,15 +1,35 @@
-package de.phip1611.img_to_webp.lib.service.api;
+package de.phip1611.img_to_webp.lib.service.api.metadata;
 
+import java.util.Objects;
+
+/**
+ * The result of an executed process.
+ */
 public class ProcessExecResult {
 
+    /**
+     * Shows if there was no error.
+     */
     private final boolean success;
 
+    /**
+     * Process-Output.
+     */
     private final String stdOut;
 
+    /**
+     * Error-Output.
+     */
     private final String stdErr;
 
+    /**
+     * Stack-Trace if a Java-Exception occurred.
+     */
     private final String stackTrace;
 
+    /**
+     * Exit-Code of the process.
+     */
     private final int exitCode;
 
     public ProcessExecResult(boolean success, String stdOut, String stdErr, String stackTrace, int exitCode) {
@@ -57,5 +77,22 @@ public class ProcessExecResult {
                 ", stdErr='" + stdErr + '\'' +
                 ", stackTrace='" + stackTrace + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProcessExecResult that = (ProcessExecResult) o;
+        return success == that.success &&
+                exitCode == that.exitCode &&
+                Objects.equals(stdOut, that.stdOut) &&
+                Objects.equals(stdErr, that.stdErr) &&
+                Objects.equals(stackTrace, that.stackTrace);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(success, stdOut, stdErr, stackTrace, exitCode);
     }
 }

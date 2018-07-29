@@ -1,6 +1,6 @@
 package de.phip1611.img_to_webp.lib;
 
-import de.phip1611.img_to_webp.lib.service.api.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.api.metadata.ProcessExecResult;
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.lib.service.impl.ProcessExecServiceImpl;
 import org.junit.Assert;
@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-public class ProcessExecServiceUnitTest {
+public class ProcessExecServiceTest {
 
     private ProcessExecService service;
 
@@ -18,7 +18,7 @@ public class ProcessExecServiceUnitTest {
     // serves as a default, always available command on (nearly) all systems
     private final String whichCommandForSystem;
 
-    public ProcessExecServiceUnitTest() {
+    public ProcessExecServiceTest() {
         this.runsOnWindows = System.getProperty("os.name").toLowerCase().contains("windows");
         this.whichCommandForSystem = this.runsOnWindows ? "where" : "which";
         // else assume we are on a unix system (that has which installed)
