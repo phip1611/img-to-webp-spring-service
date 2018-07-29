@@ -10,8 +10,9 @@ In additional this repository provides a REST-Service created with Java and Spri
 ### Dev
 [![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=dev)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
 
-## Schnittstelle
-### Input
+## REST-Interface
+
+### Input: `POST-Request` to `/convert`
 ```
 {
     "fileExtension": string; // e.g. "jpeg"
@@ -20,7 +21,7 @@ In additional this repository provides a REST-Service created with Java and Spri
 }
 ```
 
-### Output
+### Output: `Response` from `/convert`
 ```
 {
     "success": boolean;
@@ -33,6 +34,8 @@ In additional this repository provides a REST-Service created with Java and Spri
 ```
 
 ## build and run
+- install `cwebp` on your machine, e.g. via https://developers.google.com/speed/webp/docs/precompiled
+and make sure it's in your PATH variable
 - `git clone`
 - `mvn clean install`
 - `cd target && java -jar ....jar` (starts by default on Port 8080; change for example with `-Dserver.port=1337` (or any other spring configuration method you like)

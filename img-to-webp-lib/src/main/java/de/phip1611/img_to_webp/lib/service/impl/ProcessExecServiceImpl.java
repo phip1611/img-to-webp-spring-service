@@ -48,11 +48,26 @@ public class ProcessExecServiceImpl implements ProcessExecService {
             System.err.println("Failure during waiting for process to finish!!");
             stackTrace = Optional.of(e.getMessage());
         } finally {
-            // hier unten erst die jeweiligen Ausgaben holen
-            // da wir sonst das oben für den try und jeden catch block einzeln machen müsssten!
+            // when there was no exception
             if (process != null) {
+                // hier unten erst die jeweiligen Ausgaben holen
+                // da wir sonst das oben für den try und jeden catch block einzeln machen müsssten!
                 stdOut  = this.stdToString(process.getInputStream());
                 stdErr  = this.stdToString(process.getErrorStream());
+
+                // in some cases (for example when running webp)
+                // the output lands in stdErr even if everything was successfull
+                // at least on windows
+                // therefore let's try the following (swap)
+                // not really a bug but it's confusing
+                if (exitCode == 0) {
+                    if (!stdOut.isPresent()) {
+                        if (stdErr.isPresent()) {
+                            stdOut = stdErr;
+                            stdErr = Optional.empty();
+                        }
+                    }
+                }
             }
         }
 
