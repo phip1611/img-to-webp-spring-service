@@ -31,13 +31,13 @@
                     <li class="nav-item" th:classappend="${page} == 'about-me' ? 'active' : ''">
                         <a class="nav-link" href="/about-me">About me (the dev)</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <!--<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
                             <a class="dropdown-item" href="/impressum">Impressum</a>
                             <a class="dropdown-item" href="/datenschutz">Datenschutzerklärung</a>
                         </div>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
         </div>
@@ -46,7 +46,7 @@
     <section th:include="inc/__${page}__"></section>
 
     <footer class="container">
-        <p>&copy; Company 2017-2018</p>
+        <p>&copy; Philipp Schuster <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> - We don't collect any data. Cached images will be deleted after 5 Minutes.</p>
     </footer>
 </body>
 </html>

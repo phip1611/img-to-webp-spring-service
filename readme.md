@@ -33,6 +33,8 @@ In additional this repository provides a REST-Service created with Java and Spri
 ```
 
 ## build and run
+- install `cwebp` on your machine, e.g. via https://developers.google.com/speed/webp/docs/precompiled
+and make sure it's in your PATH variable
 - `git clone`
 - `mvn clean install`
 - `cd target && java -jar ....jar` (starts by default on Port 8080; change for example with `-Dserver.port=1337` (or any other spring configuration method you like)

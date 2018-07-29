@@ -58,8 +58,15 @@ public class WebsiteController {
 
     @PostMapping(path = "/upload")
     public void handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   @RequestParam("quality") int quality,
-                                   HttpServletResponse response) throws IOException {
+                                 @RequestParam("quality") int quality,
+                                 // reqired = false, because checkboxes are not send when being not checked
+                                 @RequestParam(value = "consent", required = false) boolean consent,
+                                 HttpServletResponse response) throws IOException {
+        if (!consent) {
+            response.getOutputStream().write("Check consent checkmark.".getBytes());
+            return;
+        }
+
         response.setContentType("image/webp");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
 
