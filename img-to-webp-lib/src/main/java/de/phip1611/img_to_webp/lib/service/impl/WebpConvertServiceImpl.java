@@ -57,18 +57,8 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         }
 
         byte[] data = this.readTargetFileFromWorkingDirectory(input, workingDirectory);
-        WebpConvertOutput.Builder builder = WebpConvertOutput.builder()
-                .setData(data)
-                .setSuccess(true)
-                .setQuality(input.getQuality());
 
-        if (!builder.isValid()) {
-            // this should be impossible to reach
-            System.err.println("Something went really wrong, this should not happen! Out-File is not valid!");
-            return WebpConvertOutput.failure();
-        } else {
-            return builder.build();
-        }
+        return new WebpConvertOutput(data, input.getQuality());
     }
 
     private byte[] readTargetFileFromWorkingDirectory(WebpConvertInput input, File workingDirectory) {

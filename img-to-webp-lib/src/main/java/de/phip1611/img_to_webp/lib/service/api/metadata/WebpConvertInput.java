@@ -1,7 +1,5 @@
 package de.phip1611.img_to_webp.lib.service.api.metadata;
 
-import de.phip1611.img_to_webp.lib.service.util.Buildable;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
@@ -138,7 +136,7 @@ public class WebpConvertInput {
     /**
      * Builder that helps us to generate a valid WebpConvertInput.
      */
-    public static class Builder implements Buildable<WebpConvertInput> {
+    public static class Builder {
 
         /**
          * The binary data of the source image.
@@ -160,7 +158,6 @@ public class WebpConvertInput {
          *
          * @return null or a completely valid object
          */
-        @Override
         public WebpConvertInput build() {
             if (this.isValid()) {
                 return new WebpConvertInput(
@@ -176,9 +173,8 @@ public class WebpConvertInput {
         /**
          * Checks if a valid POJO can be build.
          *
-         * @return alid POJO can be build
+         * @return a valid POJO can be build
          */
-        @Override
         public boolean isValid() {
             return this.data != null
                     && this.data.length + 1 > MIN_FILE_SIZE // + 1 because array index starts at 0
@@ -214,23 +210,6 @@ public class WebpConvertInput {
                     ", fileExt='" + fileExt + '\'' +
                     ", quality=" + quality +
                     '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Builder builder = (Builder) o;
-            return quality == builder.quality &&
-                    Arrays.equals(data, builder.data) &&
-                    Objects.equals(fileExt, builder.fileExt);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = Objects.hash(fileExt, quality);
-            result = 31 * result + Arrays.hashCode(data);
-            return result;
         }
     }
 }
