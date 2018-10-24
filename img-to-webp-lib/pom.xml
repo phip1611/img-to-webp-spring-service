@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.phip1611.img-to-webp</groupId>
     <artifactId>img-to-webp-lib</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
     <packaging>jar</packaging>
     <name>Image to WebP Converter Library</name>
 
@@ -24,11 +24,26 @@
              festsetzen, damit nicht irgendwann junit 5 rein kommt! -->
         </dependency>
 
+        <!-- Wird nur im Test benutzt -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId>
+            <version>2.7.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

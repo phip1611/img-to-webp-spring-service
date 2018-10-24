@@ -1,78 +1,96 @@
 package de.phip1611.img_to_webp.lib.service.api.metadata;
 
-import de.phip1611.img_to_webp.lib.service.util.Buildable;
+import org.immutables.value.Value;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
+
+import static org.assertj.core.util.Preconditions.checkState;
 
 /**
  * Everything we need to create the file in the file system,
  * locate it, convert it and find the target file.
  */
-public class WebpConvertInput {
+@Value.Immutable
+public interface WebpConvertInput {
 
     /**
      * File-Extension for converted images.
      */
-    public final static String WEBP_FILE_EXTENSION = "webp";
+    String WEBP_FILE_EXTENSION = "webp";
 
     /**
      * Minimal file size (below is either error or spamming the service with nonsense)
      */
-    public final static int MIN_FILE_SIZE = 120; // no images has less bytes
+    int MIN_FILE_SIZE = 120; // no images has less bytes
 
     /**
      * Maximum file size.
      */
-    public final static int MAX_FILE_SIZE = 10485760; // 10 MebiByte
+    int MAX_FILE_SIZE = 10485760; // 10 MebiByte
 
     /**
      * Default Quality for conversion.
      */
-    public final static int DEFAULT_QUALITY = 82;
+    int DEFAULT_QUALITY = 82;
+
+    enum AllowedFileType {
+        JPEG, JPG, PNG, TIFF;
+
+        public static boolean isAllowed(String fileExt) {
+            return List.of(AllowedFileType.values()).stream()
+                    .map(Enum::name)
+                    .map(String::toLowerCase)
+                    .anyMatch(ext -> ext.equals(fileExt.toLowerCase()));
+        }
+    }
+
+    /**
+     * The binary data of the source image.
+     */
+    byte[] getData();
+
+    /**
+     * Get's the UUID for this input. Default is a Random UUID.
+     *
+     * @return UUID for this input.
+     */
+    @Value.Default
+    default UUID getUuid() {
+        return UUID.randomUUID();
+    }
+
+    /**
+     * Returns the file extension of the original file.
+     *
+     * @return file extension of the original file.
+     */
+    String getFileExt();
+
+    /**
+     * A quality factor for the converter between 1 and 100.
+     */
+    @Value.Default
+    default int getQuality() {
+        return DEFAULT_QUALITY;
+    };
 
     /**
      * Source-filenname in the working directory. Therefore there is no path
      * and just filename and extension in this.
      */
-    private final String sourceFileName;
+    default String getSourceFileName() {
+        return this.getUuid().toString() + "-out." + this.getFileExt();
+    }
 
     /**
      * Target-filename in the working directory. Therefore there is no path
      * and just filename and extension in this.
      */
-    private final String targetFileName;
-
-    /**
-     * The binary data of the source image.
-     */
-    private final byte[] data;
-
-    /**
-     * A quality factor for the converter between 1 and 100.
-     */
-    private final int quality;
-
-    private WebpConvertInput(String fileExt,
-                             byte[] data,
-                             int quality) {
-        String randomUuid = UUID.randomUUID().toString();
-        this.sourceFileName = randomUuid + "." + fileExt;
-        // -out, because we can also have .webp as input (to change quality e.g.)
-        this.targetFileName = randomUuid + "-out." + WEBP_FILE_EXTENSION;
-
-        this.quality = quality;
-        this.data = data;
-    }
-
-    public String getSourceFileName() {
-        return sourceFileName;
-    }
-
-    public String getTargetFileName() {
-        return targetFileName;
+    default String getTargetFileName() {
+        return this.getUuid().toString() + "-out." + WEBP_FILE_EXTENSION;
     }
 
     /**
@@ -81,8 +99,8 @@ public class WebpConvertInput {
      *
      * @return file object for the source File
      */
-    public File getSourceFile() {
-        return new File(sourceFileName);
+    default File getSourceFile() {
+        return new File(this.getSourceFileName());
     }
 
     /**
@@ -91,146 +109,26 @@ public class WebpConvertInput {
      *
      * @return file object for the target File
      */
-    public File getTargetFile() {
-        return new File(targetFileName);
+    default File getTargetFile() {
+        return new File(this.getTargetFileName());
     }
 
-    public byte[] getData() {
-        return data;
-    }
+    @Value.Check
+    default void check() {
+        //checkState(this.getFileExt() != null, "'fileExt' must not be null!");
+        // The generated Builder catches NPE automatically
+        checkState(!this.getFileExt().isEmpty(), "'fileExt' must not be empty!");
+        checkState(this.getFileExt().length() <= 4, "'fileExt' must be four or less characters long!");
+        checkState(AllowedFileType.isAllowed(this.getFileExt()), "'fileExt' has wrong type! Must be one of: " + Arrays.toString(AllowedFileType.values()));
 
-    public int getQuality() {
-        return quality;
-    }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+        //checkState(this.getData() != null, "'data' must not be null!");
+        // the generated Builder catches NPE automatically
+        checkState(this.getData().length >= MIN_FILE_SIZE, "'filesize' should be at least "+MIN_FILE_SIZE+" Bytes!");
+        checkState(this.getData().length < MAX_FILE_SIZE, "'filesize' should be less than "+MAX_FILE_SIZE+" Bytes!");
 
-    @Override
-    public String toString() {
-        return "WebpConvertInput{" +
-                "sourceFileName='" + sourceFileName + '\'' +
-                ", targetFileName='" + targetFileName + '\'' +
-                ", data=" + Arrays.toString(data) +
-                ", quality=" + quality +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WebpConvertInput input = (WebpConvertInput) o;
-        return quality == input.quality &&
-                Objects.equals(sourceFileName, input.sourceFileName) &&
-                Objects.equals(targetFileName, input.targetFileName) &&
-                Arrays.equals(data, input.data);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(sourceFileName, targetFileName, quality);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
-    }
-
-    /**
-     * Builder that helps us to generate a valid WebpConvertInput.
-     */
-    public static class Builder implements Buildable<WebpConvertInput> {
-
-        /**
-         * The binary data of the source image.
-         */
-        private byte[] data;
-
-        /**
-         * The file-extension of the source image. Lowercase and 3 to 4 characters.
-         */
-        private String fileExt;
-
-        /**
-         * A quality factor for the converter between 1 and 100.
-         */
-        private int quality = DEFAULT_QUALITY;
-
-        /**
-         * Returns null or a completely valid object.
-         *
-         * @return null or a completely valid object
-         */
-        @Override
-        public WebpConvertInput build() {
-            if (this.isValid()) {
-                return new WebpConvertInput(
-                        this.fileExt,
-                        this.data,
-                        this.quality
-                );
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Checks if a valid POJO can be build.
-         *
-         * @return alid POJO can be build
-         */
-        @Override
-        public boolean isValid() {
-            return this.data != null
-                    && this.data.length + 1 > MIN_FILE_SIZE // + 1 because array index starts at 0
-                    && this.data.length + 1 < MAX_FILE_SIZE
-                    && this.quality > 0
-                    && this.quality <= 100
-                    && this.fileExt != null
-                    && ValidSourceImageType.isValid(this.fileExt);
-        }
-
-        public Builder setData(byte[] data) {
-            this.data = data;
-            return this;
-        }
-
-        public Builder setQuality(int quality) {
-            this.quality = quality;
-            return this;
-        }
-
-        public Builder setFileExt(String fileExt) {
-            if (fileExt != null) {
-                fileExt = fileExt.toLowerCase();
-            }
-            this.fileExt = fileExt;
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return "Builder{" +
-                    "data=" + Arrays.toString(data) +
-                    ", fileExt='" + fileExt + '\'' +
-                    ", quality=" + quality +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Builder builder = (Builder) o;
-            return quality == builder.quality &&
-                    Arrays.equals(data, builder.data) &&
-                    Objects.equals(fileExt, builder.fileExt);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = Objects.hash(fileExt, quality);
-            result = 31 * result + Arrays.hashCode(data);
-            return result;
-        }
+        checkState(this.getQuality() > 0, "'quality' should be larger than '0'!");
+        checkState(this.getQuality() <= 100, "'quality' should be less than or equals to '100'!");
     }
 }
+

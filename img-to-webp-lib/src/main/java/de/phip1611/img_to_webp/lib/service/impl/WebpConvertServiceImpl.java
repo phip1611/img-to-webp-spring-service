@@ -57,18 +57,8 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         }
 
         byte[] data = this.readTargetFileFromWorkingDirectory(input, workingDirectory);
-        WebpConvertOutput.Builder builder = WebpConvertOutput.builder()
-                .setData(data)
-                .setSuccess(true)
-                .setQuality(input.getQuality());
 
-        if (!builder.isValid()) {
-            // this should be impossible to reach
-            System.err.println("Something went really wrong, this should not happen! Out-File is not valid!");
-            return WebpConvertOutput.failure();
-        } else {
-            return builder.build();
-        }
+        return new WebpConvertOutput(data, input.getQuality());
     }
 
     private byte[] readTargetFileFromWorkingDirectory(WebpConvertInput input, File workingDirectory) {
@@ -120,12 +110,13 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         return workingDirectory.isDirectory() && workingDirectory.canRead() && workingDirectory.canWrite();
     }
 
+    // we assume WebpConvertInput is correct, therefore we do not need a builder for the execCommand!
     private String buildCommandString(WebpConvertInput input) {
         String execCommand = "cwebp -q ";
         execCommand += input.getQuality();
         execCommand += " " + input.getSourceFileName();
         execCommand += " -o " + input.getTargetFileName();
         return execCommand;
-    };
+    }
 
 }
