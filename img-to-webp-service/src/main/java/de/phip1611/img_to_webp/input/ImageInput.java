@@ -65,4 +65,13 @@ public class ImageInput {
         this.quality = quality;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "ImageInput{" +
+                "fileExtension='" + fileExtension + '\'' +
+                ", quality=" + quality +
+                ", base64String='" + (base64String.length() <= 10 ? base64String : (base64String.substring(0, 10) + "...")) + '\'' +
+                '}';
+    }
 }

@@ -119,7 +119,7 @@ public interface WebpConvertInput {
         // The generated Builder catches NPE automatically
         checkState(!this.getFileExt().isEmpty(), "'fileExt' must not be empty!");
         checkState(this.getFileExt().length() <= 4, "'fileExt' must be four or less characters long!");
-        checkState(AllowedFileType.isAllowed(this.getFileExt()), "'fileExt' has wrong type! Musst be one of: " + Arrays.toString(AllowedFileType.values()));
+        checkState(AllowedFileType.isAllowed(this.getFileExt()), "'fileExt' has wrong type! Must be one of: " + Arrays.toString(AllowedFileType.values()));
 
 
         //checkState(this.getData() != null, "'data' must not be null!");

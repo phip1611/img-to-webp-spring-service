@@ -4,6 +4,7 @@ package de.phip1611.img_to_webp.service.impl;
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.lib.service.api.WebpConvertService;
+import de.phip1611.img_to_webp.lib.service.api.metadata.ImmutableWebpConvertInput;
 import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertInput;
 import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertOutput;
 import de.phip1611.img_to_webp.service.api.ImageService;
@@ -26,9 +27,12 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageDto convert(ImageInput input) {
-        WebpConvertInput webpInput = this.transformInputForWebp(input);
-        if (webpInput == null) {
-            System.err.println("Input is not valid!");
+        WebpConvertInput webpInput;
+        try {
+            webpInput = this.transformInputForWebp(input);
+        } catch (IllegalStateException ex) {
+            System.err.println("Input is not valid! It's: " + input.toString());
+            System.err.println("Exception message: " + ex.getMessage());
             return ImageDto.failureDto();
         }
 
@@ -42,10 +46,10 @@ public class ImageServiceImpl implements ImageService {
     }
 
     public WebpConvertInput transformInputForWebp(ImageInput input) {
-        return WebpConvertInput.builder()
-                .setData(Base64.getDecoder().decode(input.getBase64String().getBytes()))
-                .setFileExt(input.getFileExtension())
-                .setQuality(input.getQuality())
+        return ImmutableWebpConvertInput.builder()
+                .data(Base64.getDecoder().decode(input.getBase64String().getBytes()))
+                .fileExt(input.getFileExtension())
+                .quality(input.getQuality())
                 .build();
     }
 }
