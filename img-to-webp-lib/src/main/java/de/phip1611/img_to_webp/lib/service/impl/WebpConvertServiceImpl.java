@@ -110,12 +110,13 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         return workingDirectory.isDirectory() && workingDirectory.canRead() && workingDirectory.canWrite();
     }
 
+    // we assume WebpConvertInput is correct, therefore we do not need a builder for the execCommand!
     private String buildCommandString(WebpConvertInput input) {
         String execCommand = "cwebp -q ";
         execCommand += input.getQuality();
         execCommand += " " + input.getSourceFileName();
         execCommand += " -o " + input.getTargetFileName();
         return execCommand;
-    };
+    }
 
 }
