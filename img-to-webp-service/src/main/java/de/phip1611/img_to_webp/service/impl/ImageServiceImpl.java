@@ -10,7 +10,6 @@ import de.phip1611.img_to_webp.service.api.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.Base64;
 
 import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.WORKING_DIRECTORY;

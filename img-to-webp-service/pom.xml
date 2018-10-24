@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>10</java.version>
-        <img-to-webp-lib.version>2.2.0-SNAPSHOT</img-to-webp-lib.version>
+        <img-to-webp-lib.version>2.1.0</img-to-webp-lib.version>
     </properties>
 
     <dependencies>
