@@ -7,30 +7,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.phip1611.img_to_webp.rest;
+package de.phip1611.img_to_webp.config;
 
-import de.phip1611.img_to_webp.dto.ImageDto;
-import de.phip1611.img_to_webp.input.ImageInput;
-import de.phip1611.img_to_webp.service.impl.ImageServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import de.phip1611.img_to_webp.lib.service.impl.WebpConvertServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import javax.validation.Valid;
+@Configuration
+public class WebpConvertServiceConfig {
 
-@RestController
-public class ImageController {
-    private final ImageServiceImpl service;
-
-    @Autowired
-    public ImageController(ImageServiceImpl service) {
-        this.service = service;
-    }
-
-    @PostMapping("convert")
-    public ImageDto convert(@Valid @RequestBody ImageInput input) {
-        return this.service.convert(input);
+    @Bean
+    public WebpConvertServiceImpl webpConvertService() {
+        return new WebpConvertServiceImpl();
     }
 
 }

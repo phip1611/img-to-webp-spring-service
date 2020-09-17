@@ -5,9 +5,6 @@ spring:
       max-request-size: 25MB
       max-file-size: 25MB
 server:
-  # alle anfragen von außen abblocken, das ist nur für andere (Spring) Services
-  # auf dem gleichen Server gedacht
-  address: "localhost"
   compression:
     enabled: true
     min-response-size: 100
