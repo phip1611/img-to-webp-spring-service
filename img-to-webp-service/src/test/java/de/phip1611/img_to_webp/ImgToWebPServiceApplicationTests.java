@@ -86,8 +86,8 @@ public class ImgToWebPServiceApplicationTests {
         Assert.assertEquals(200, res2.getStatusCodeValue());
         Assert.assertNotNull(dto1);
         Assert.assertNotNull(dto2);
-        Assert.assertTrue(!dto1.isSuccess());
-        Assert.assertTrue(!dto2.isSuccess());
+        Assert.assertFalse(dto1.isSuccess());
+        Assert.assertFalse(dto2.isSuccess());
     }
 
     private String getFileEnding(String path) {
