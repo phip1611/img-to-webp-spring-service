@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.phip1611.img-to-webp</groupId>
     <artifactId>img-to-webp-lib</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <packaging>jar</packaging>
     <name>Image to WebP Converter Library</name>
 
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version> <!-- Version kommt auch von Spring Boot 2.1.0 -->
+            <version>4.13</version> <!-- Version kommt auch von Spring Boot 2.1.0 -->
             <!-- Kommt aus spring-boot-starter-test, aber ich möchte das hier vorerst auf junit 4
              festsetzen, damit nicht irgendwann junit 5 rein kommt! -->
         </dependency>
@@ -28,21 +28,21 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>2.8.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
-            <version>2.8.0</version>
+            <version>2.8.8</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.13.2</version>
+            <version>3.17.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
