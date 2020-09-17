@@ -7,41 +7,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.phip1611.img_to_webp.lib.service.api;
+package de.phip1611.img_to_webp.config;
 
-import de.phip1611.img_to_webp.lib.service.api.metadata.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.impl.WebpConvertServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
+@Configuration
+public class WebpConvertServiceConfig {
 
-/**
- * Service that helps to run processes on the machine.
- */
-public interface ProcessExecService {
-
-    /**
-     * Executes a command in the working directory.
-     *
-     * @param command Command to execute
-     * @param workingDirectory Working Directory
-     * @return Result of Command Execution
-     */
-    ProcessExecResult exec(String command, String workingDirectory);
-
-    /**
-     * Executes a command in the working directory.
-     *
-     * @param command Command to execute
-     * @param workingDirectory Working Directory
-     * @return Result of Command Execution
-     */
-    ProcessExecResult exec(String command, File workingDirectory);
-
-    /**
-     * Checks if a command is available on the machine.
-     *
-     * @param command to execute
-     * @return command is available on the machine
-     */
-    boolean commandIsAvailable(String command);
+    @Bean
+    public WebpConvertServiceImpl webpConvertService() {
+        return new WebpConvertServiceImpl();
+    }
 
 }
