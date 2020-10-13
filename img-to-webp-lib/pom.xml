@@ -19,7 +19,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version> <!-- Version kommt auch von Spring Boot 2.1.0 -->
+            <version>4.13.1</version> <!-- Version kommt auch von Spring Boot 2.1.0 -->
             <!-- Kommt aus spring-boot-starter-test, aber ich möchte das hier vorerst auf junit 4
              festsetzen, damit nicht irgendwann junit 5 rein kommt! -->
         </dependency>
