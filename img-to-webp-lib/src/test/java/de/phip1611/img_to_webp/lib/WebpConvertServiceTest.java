@@ -1,9 +1,9 @@
 package de.phip1611.img_to_webp.lib;
 
 import de.phip1611.img_to_webp.lib.service.api.WebpConvertService;
-import de.phip1611.img_to_webp.lib.service.api.metadata.ImmutableWebpConvertInput;
-import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertInput;
-import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertOutput;
+import de.phip1611.img_to_webp.lib.service.data.ImmutableWebpConvertInput;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertOutput;
 import de.phip1611.img_to_webp.lib.service.impl.WebpConvertServiceImpl;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import java.io.*;
 
-import static de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertInput.MIN_FILE_SIZE;
+import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MIN_FILE_SIZE;
 
 public class WebpConvertServiceTest {
 
