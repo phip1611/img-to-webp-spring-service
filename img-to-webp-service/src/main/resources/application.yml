@@ -5,6 +5,7 @@ spring:
       max-request-size: 25MB
       max-file-size: 25MB
 
+
 # activate all debug logging
 logging:
   level:
@@ -26,6 +27,8 @@ management:
 # always resolve forwarded headers
 server:
   forward-headers-strategy: native
+  # accept requests from everywhere; make sure reverse proxy is securing this service
+  address: "0.0.0.0"
 
 # RateLimitConfiguration.java
 rate-limit:
