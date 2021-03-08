@@ -43,31 +43,36 @@ public class WebsiteController {
     }
 
     @GetMapping(path = "")
-    public String index(Model model) {
+    public String index(Model model, HttpServletRequest request) {
+        model.addAttribute("url", request.getRequestURI());
         model.addAttribute("page", "index");
         return "index";
     }
 
     @GetMapping(path = "upload")
-    public String upload(Model model) {
+    public String upload(Model model, HttpServletRequest request) {
+        model.addAttribute("url", request.getRequestURI());
         model.addAttribute("page", "upload");
         return "index";
     }
 
     @GetMapping(path = "legal-privacy")
-    public String legal(Model model) {
+    public String legal(Model model, HttpServletRequest request) {
+        model.addAttribute("url", request.getRequestURI());
         model.addAttribute("page", "legal-privacy");
         return "index";
     }
 
     @GetMapping(path = "rest-api")
-    public String restApi(Model model) {
+    public String restApi(Model model, HttpServletRequest request) {
+        model.addAttribute("url", request.getRequestURI());
         model.addAttribute("page", "rest-api");
         return "index";
     }
 
     @GetMapping(path = "about-me")
-    public String aboutMe(Model model) {
+    public String aboutMe(Model model, HttpServletRequest request) {
+        model.addAttribute("url", request.getRequestURI());
         model.addAttribute("page", "about-me");
         return "index";
     }
