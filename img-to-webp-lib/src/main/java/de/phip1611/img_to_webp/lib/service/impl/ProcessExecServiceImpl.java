@@ -9,9 +9,11 @@
  */
 package de.phip1611.img_to_webp.lib.service.impl;
 
-import de.phip1611.img_to_webp.lib.service.api.metadata.ProcessExecResult;
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.lib.service.api.RuntimeEnvHelper;
+import de.phip1611.img_to_webp.lib.service.data.ProcessExecResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Optional;
@@ -20,6 +22,8 @@ import java.util.Optional;
  * {@inheritDoc}
  */
 public class ProcessExecServiceImpl implements ProcessExecService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessExecServiceImpl.class);
 
     private final Runtime runtime;
 
@@ -42,19 +46,19 @@ public class ProcessExecServiceImpl implements ProcessExecService {
 
         Process process = null;
         try {
-            System.out.println("Executing: '" + command + "' in '" + workingDirectory.getPath() + "'");
+            LOGGER.debug("Executing: '" + command + "' in '" + workingDirectory.getPath() + "'");
             process = runtime.exec(command, null, workingDirectory);
             exitCode = process.waitFor(); // Warten bis Prozess durchgelaufen ist, dannach geht es weiter.
             if (exitCode != 0) {
-                System.err.println("Execution failed, Code: " + exitCode);
+                LOGGER.error("Execution failed, Code: " + exitCode);
             } else {
                 success = true;
             }
         } catch (IOException e) {
-            System.err.println("Failure during execution!");
+            LOGGER.error("Failure during execution!");
             stackTrace = Optional.of(e.getMessage());
         } catch (InterruptedException e) {
-            System.err.println("Failure during waiting for process to finish!!");
+            LOGGER.error("Failure during waiting for process to finish!!");
             stackTrace = Optional.of(e.getMessage());
         } finally {
             // when there was no exception
@@ -121,9 +125,9 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         );
 
         if (result.isSuccess()) {
-            System.out.println("Command is available!");
+            LOGGER.debug("Command is available!");
         } else {
-            System.out.println("Command is NOT available!");
+            LOGGER.debug("Command is NOT available!");
         }
         result.print();
 

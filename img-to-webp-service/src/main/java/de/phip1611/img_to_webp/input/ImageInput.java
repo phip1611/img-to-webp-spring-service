@@ -21,25 +21,26 @@ import javax.validation.constraints.NotEmpty;
 public class ImageInput {
 
     /**
-     * Standardqualität für den Converter.
+     * Default quality for webp config.
      */
     public static final byte DEFAULT_WEBP_QUALITY = 82;
 
     /**
-     * Dateiendung des Bildes.
+     * File extension.
      */
     @NotEmpty
     @Length(min = 3, max = 4)
     private String fileExtension;
 
     /**
-     * Base64-Repräsentation der Binärdaten.
+     * Base64 representation of the image.
      */
     @NotEmpty
     private String base64String;
 
     /**
-     * Die Ziel-Qualität zu der Konvertiert werden soll.
+     * Optional quality parameter for the conversion.
+     * Default value is {@link #DEFAULT_WEBP_QUALITY}.
      */
     @Min(1)
     @Max(100)

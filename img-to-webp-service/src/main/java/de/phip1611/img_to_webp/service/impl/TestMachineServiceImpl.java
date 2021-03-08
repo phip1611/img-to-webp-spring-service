@@ -11,6 +11,8 @@ package de.phip1611.img_to_webp.service.impl;
 
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.service.api.TestMachineService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TestMachineServiceImpl implements TestMachineService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestMachineServiceImpl.class);
 
     private final ProcessExecService processExecService;
 
@@ -34,9 +38,9 @@ public class TestMachineServiceImpl implements TestMachineService {
     public void assertCwebpAvailable() {
         var res = this.processExecService.commandIsAvailable("cwebp");
         if (res) {
-            System.out.println("cwebp is available on this machine, great!");
+            LOGGER.debug("cwebp is available on this machine, great!");
         } else {
-            System.err.println("cwebp is NOT available on this machine, yikes!");
+            LOGGER.error("cwebp is NOT available on this machine, yikes!");
             System.exit(-1);
         }
     }

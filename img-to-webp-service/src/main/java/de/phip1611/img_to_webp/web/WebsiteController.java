@@ -12,7 +12,9 @@ package de.phip1611.img_to_webp.web;
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
 import de.phip1611.img_to_webp.service.api.ImageService;
+import de.phip1611.img_to_webp.service.api.RateLimitService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,9 +33,13 @@ public class WebsiteController {
 
     private final ImageService imageService;
 
+    private final RateLimitService rateLimitService;
+
     @Autowired
-    public WebsiteController(ImageService imageService) {
+    public WebsiteController(ImageService imageService,
+                             RateLimitService rateLimitService) {
         this.imageService = imageService;
+        this.rateLimitService = rateLimitService;
     }
 
     @GetMapping(path = "")
@@ -47,15 +54,15 @@ public class WebsiteController {
         return "index";
     }
 
-    @GetMapping(path = "impressum")
-    public String impressum(Model model) {
-        model.addAttribute("page", "impressum");
+    @GetMapping(path = "legal-privacy")
+    public String legal(Model model) {
+        model.addAttribute("page", "legal-privacy");
         return "index";
     }
 
-    @GetMapping(path = "datenschutz")
-    public String datenschutz(Model model) {
-        model.addAttribute("page", "datenschutz");
+    @GetMapping(path = "rest-api")
+    public String restApi(Model model) {
+        model.addAttribute("page", "rest-api");
         return "index";
     }
 
@@ -66,19 +73,36 @@ public class WebsiteController {
     }
 
     @PostMapping(path = "/upload")
-    public void handleFileUpload(@RequestParam("file") MultipartFile file,
-                                 @RequestParam("quality") int quality,
+    public void handleFileUpload(@RequestParam("file")
+                                 MultipartFile file,
+                                 @RequestParam("quality")
+                                 int quality,
                                  // reqired = false, because checkboxes are not send when being not checked
-                                 @RequestParam(value = "consent", required = false) boolean consent,
+                                 @RequestParam(value = "consent", required = false)
+                                 boolean consent,
+                                 HttpServletRequest request,
                                  HttpServletResponse response) throws IOException {
         if (!consent) {
-            response.getOutputStream().write("Check consent checkmark.".getBytes());
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.getOutputStream().write("Check consent checkmark!".getBytes());
             return;
         }
+        if (file.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.getOutputStream().write("No file specified!".getBytes());
+            return;
+        }
+
+        this.rateLimitService.assertRequest(request);
 
         response.setContentType("image/webp");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
 
+        if (file.getContentType() == null) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.getOutputStream().write("Invalid Content Type!".getBytes());
+            return;
+        }
         String[] split = file.getContentType().split("/");
         String fileExt = split[split.length - 1];
 
@@ -90,10 +114,13 @@ public class WebsiteController {
         ImageDto dto = this.imageService.convert(input);
         byte[] data = Base64.getDecoder().decode(dto.getBase64String());
         OutputStream os = response.getOutputStream();
-        for (byte datum : data) {
-            os.write(datum);
-        }
+        os.write(data);
         response.flushBuffer();
     }
+
+    /*@ExceptionHandler(RateLimitException.class)
+    public String databaseError() {
+        return "error/429.html";
+    }*/
 
 }

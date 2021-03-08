@@ -11,9 +11,9 @@ package de.phip1611.img_to_webp.lib.service.impl;
 
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.lib.service.api.WebpConvertService;
-import de.phip1611.img_to_webp.lib.service.api.metadata.ProcessExecResult;
-import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertInput;
-import de.phip1611.img_to_webp.lib.service.api.metadata.WebpConvertOutput;
+import de.phip1611.img_to_webp.lib.service.data.ProcessExecResult;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertOutput;
 
 import java.io.File;
 import java.io.FileOutputStream;

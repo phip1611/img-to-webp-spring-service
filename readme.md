@@ -17,7 +17,7 @@ In additional this repository provides a REST-Service created with Java and Spri
 {
     "fileExtension": string; // e.g. "jpeg"
     "base64String": string;
-    "quality": integer; // 1 - 100; Default-Value is 82
+    [optional] "quality": integer; // 1 - 100; Default-Value is 82
 }
 ```
 

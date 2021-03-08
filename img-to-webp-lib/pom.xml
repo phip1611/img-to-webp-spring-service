@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.phip1611.img-to-webp</groupId>
     <artifactId>img-to-webp-lib</artifactId>
-    <version>2.4.0</version>
+    <version>2.5.0</version>
     <packaging>jar</packaging>
     <name>Image to WebP Converter Library</name>
 
@@ -16,12 +16,11 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version> <!-- Version kommt auch von Spring Boot 2.1.0 -->
-            <!-- Kommt aus spring-boot-starter-test, aber ich möchte das hier vorerst auf junit 4
-             festsetzen, damit nicht irgendwann junit 5 rein kommt! -->
+            <version>4.13.2</version>
         </dependency>
 
         <!-- Wird nur im Test benutzt -->
@@ -42,9 +41,18 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.17.2</version>
+            <version>3.19.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- logging -->
+        <!-- same logging dependency as Spring Boot service; otherwise failures/problems -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -1,21 +1,19 @@
 <div class="margin-top"><!----></div>
 <div class="container">
     <div class="row">
-        <div class="col">
+        <div class="col-12 offset-sm-1 col-sm-10 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
             <h2>Upload image (jpg, png, tiff, webp) and convert it to WebP</h2>
             <form class="mt-5" method="post" enctype="multipart/form-data" target="_blank">
-                <div class="form-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="file" id="customFile">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
+                <div>
+                    <label for="customFile">File (max. 25MB)</label>
+                    <input type="file" class="form-control" name="file" id="customFile" accept="image/jpeg,image/jpg,image/png,image/tiff,image/webp">
                 </div>
-                <div class="row"> <!-- to remove extra margin -->
+                <div class="mt-3">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-10">
                                 <label for="quality-range">Quality</label>
-                                <input type="range" class="custom-range" name="quality" id="quality-range" min="1" max="100" value="80">
+                                <input type="range" class="form-range" name="quality" id="quality-range" min="1" max="100" value="80">
                             </div>
                             <div class="col-2">
                                 <div id="input-quality-visualizer">80</div>
@@ -24,23 +22,26 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                </div>
-
-                <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="customCheck1" name="consent">
-                        <label class="custom-control-label" for="customCheck1">
-                            I agree that with uploading my files the provider of this service will get access to them
-                            in order to fulfill the promised functionality. They will be deleted from the Server after a short time automatically.
-                            We don't share your photos with anyone.</label>
+                <div class="mt-3">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-1">
+                                <input type="checkbox" class="form-check-input" id="consentCheckmark" name="consent">
+                            </div>
+                            <div class="col-11">
+                                <label class="form-label" for="consentCheckmark">
+                                    I agree that after pressing upload the service provider gets access to the file
+                                    in order to provide the promised functionality. The file will be deleted after a
+                                    short time automatically. <strong>I do not upload illegal content.</strong>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="d-flex justify-content-center">
+                    <button type="submit" id="uploadButton" class="mt-3 btn btn-primary">Upload & Convert</button>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
     </div>

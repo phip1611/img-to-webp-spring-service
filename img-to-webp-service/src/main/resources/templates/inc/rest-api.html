@@ -1,0 +1,51 @@
+<div class="margin-top"><!----></div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>REST-API</h2>
+            <p>
+                This service offers a simple REST API to convert images to webp! In enforces a limit of
+                1000 conversions per IP per hour. IP-addresses are only stored as HASH, i.e. anonymously.
+                The maximum request size is 25MB (please be aware of the overhead of base64 encoding).
+                <strong>You are not allowed to upload illegal content to this service.</strong>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Request: <code>POST: /convert</code></h5>
+                    <p class="card-text">
+                    <pre><code>
+{
+    "fileExtension": string; // e.g. "jpeg"
+    "base64String": string;
+    [optional] "quality": integer; // 1 - 100; Default-Value is 82
+}
+            </code></pre>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Response: <code>/convert</code></h5>
+                    <p class="card-text">
+                    <pre><code>
+{
+    "success": boolean;
+    "size": number;
+    "oldSize": number;
+    "savingsInPercent": number;
+    "base64String": string;
+    "quality": integer;
+}
+            </code></pre>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,14 +1,22 @@
 <!doctype html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Img To Webp Spring Service</title>
+    <title>Img To WebP Online Converter</title>
+    <link rel="canonical" href="https://webp.phip1611.dev"/>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="Free online image to WebP image converter."/>
+    <meta name="robots" content="index"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="32x32" href="/images/logo_32x32.png">
+    <link rel="apple-touch-icon" sizes="64x64" href="/images/logo_64x64.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/images/logo_128x128.png">
+    <link rel="apple-touch-icon" sizes="256x256" href="/images/logo_256x256.png">
+
     <link rel="stylesheet" href="res/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="res/css/custom.css"/>
-    <script defer src="res/js/jquery-3.3.1.min.js"></script>
     <script defer src="res/js/bootstrap.bundle.min.js"></script>
     <script defer src="res/js/custom.js"></script>
 </head>
@@ -16,28 +24,32 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Image to WebP Converter</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHamburger" aria-controls="navbarHamburger" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <div class="collapse navbar-collapse" id="navbarHamburger">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item" th:classappend="${page} == 'index' ? 'active' : ''">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${page} == 'index' ? 'active' : ''"
+                           href="/">Home</a>
                     </li>
-                    <li class="nav-item" th:classappend="${page} == 'upload' ? 'active' : ''">
-                        <a class="nav-link" href="/upload">Upload & Convert</a>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${page} == 'upload' ? 'active' : ''"
+                           href="/upload">Upload & Convert</a>
                     </li>
-                    <li class="nav-item" th:classappend="${page} == 'about-me' ? 'active' : ''">
-                        <a class="nav-link" href="/about-me">About me (the dev)</a>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${page} == 'rest-api' ? 'active' : ''"
+                           href="/rest-api">REST API</a>
                     </li>
-                    <!--<li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="/impressum">Impressum</a>
-                            <a class="dropdown-item" href="/datenschutz">Datenschutzerklärung</a>
-                        </div>
-                    </li>-->
+                    <li class="nav-item" >
+                        <a class="nav-link" th:classappend="${page} == 'legal-privacy' ? 'active' : ''"
+                           href="/legal-privacy">Legal & Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${page} == 'about-me' ? 'active' : ''"
+                           href="/about-me">About me (the dev)</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -45,7 +57,7 @@
 
     <section th:include="inc/__${page}__"></section>
 
-    <footer class="container">
+    <footer class="footer container text-center mb-1 mt-5">
         <p>&copy; Philipp Schuster <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> - We don't collect any data. Cached images will be deleted after 5 Minutes.</p>
     </footer>
 </body>

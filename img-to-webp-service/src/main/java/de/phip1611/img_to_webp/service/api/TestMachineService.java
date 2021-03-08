@@ -17,7 +17,7 @@ package de.phip1611.img_to_webp.service.api;
 public interface TestMachineService {
 
     /**
-     * Let's the service crashes, if "cwebp" is not installed!
+     * This lets the service crash, if "cwebp" command is not available!
      */
-    public void assertCwebpAvailable();
+    void assertCwebpAvailable();
 }

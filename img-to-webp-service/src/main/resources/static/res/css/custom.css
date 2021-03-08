@@ -1,5 +1,5 @@
 .jumbotron {
-    margin-top: 2.5rem;
+    margin-top: 4rem;
 }
 
 section {
@@ -8,6 +8,10 @@ section {
 
 .margin-top {
     margin: 100px;
+}
+
+.footer {
+    border-top: 1px solid #999;
 }
 
 #input-quality-visualizer {

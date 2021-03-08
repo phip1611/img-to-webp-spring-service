@@ -7,15 +7,19 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.phip1611.img_to_webp.lib.service.api.metadata;
+package de.phip1611.img_to_webp.lib.service.data;
 
-import java.io.PrintStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 
 /**
  * The result of an executed process.
  */
 public class ProcessExecResult {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessExecResult.class);
 
     /**
      * Shows if there was no error.
@@ -71,8 +75,11 @@ public class ProcessExecResult {
     }
 
     public void print() {
-        PrintStream ps = this.success ? System.out : System.err;
-        ps.println(this.toString());
+        if (this.success) {
+            LOGGER.debug(this.toString());
+        } else {
+            LOGGER.error(this.toString());
+        }
     }
 
     @Override

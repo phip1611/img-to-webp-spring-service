@@ -10,6 +10,8 @@
 package de.phip1611.img_to_webp.service.impl;
 
 import de.phip1611.img_to_webp.service.api.CleanWorkingDirectoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,12 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 
-import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.JOB_INTERVAL;
-import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.MAX_AGE;
-import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.WORKING_DIRECTORY;
+import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.*;
 
 @Service
 public class CleanWorkingDirectoryServiceImpl implements CleanWorkingDirectoryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CleanWorkingDirectoryServiceImpl.class);
 
     @Scheduled(fixedRate = JOB_INTERVAL)
     @Override
@@ -38,7 +40,7 @@ public class CleanWorkingDirectoryServiceImpl implements CleanWorkingDirectorySe
                 long fileSeconds = instantOfFile.getEpochSecond();
                 long nowSeconds = Instant.now().getEpochSecond();
                 if (nowSeconds - MAX_AGE > fileSeconds) {
-                    System.out.println("Cleaning working directory: "
+                    LOGGER.debug("Cleaning working directory: "
                             + path.toString()
                             + " - "
                             + (path.toFile().delete() ? "success" : "could not delete")
