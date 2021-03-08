@@ -9,7 +9,9 @@
  */
 package de.phip1611.img_to_webp.config;
 
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
@@ -18,8 +20,10 @@ import java.io.File;
  * Also it checks if the working directory is ready for using.
  * Otherwise this class crashes the service.
  */
-@Component // so that Spring creates it and executes the constructor
+@Configuration // Spring creates it and executes the constructor -> important
 public class WorkingDirectoryConfig {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkingDirectoryConfig.class);
 
     public final static int MAX_AGE = 60 * 5; // 5 Minutes
 
@@ -34,21 +38,21 @@ public class WorkingDirectoryConfig {
     public WorkingDirectoryConfig() {
         if (!WORKING_DIRECTORY.isDirectory()) {
             if (!WORKING_DIRECTORY.mkdir()) {
-                System.err.println("Service can't access (or create) the Working Directory");
+                LOGGER.error("Service can't access (or create) the Working Directory");
                 System.exit(-1);
             }
         }
 
         if (!WORKING_DIRECTORY.canRead()) {
-            System.err.println("Service can't read the Working Directory");
+            LOGGER.error("Service can't read the Working Directory");
             System.exit(-1);
         }
 
         if (!WORKING_DIRECTORY.canWrite()) {
-            System.err.println("Service can't write to the Working Directory");
+            LOGGER.error("Service can't write to the Working Directory");
             System.exit(-1);
         }
 
-        System.out.println("Service will be using the following Working Directory: " + WORKING_DIRECTORY);
+        LOGGER.debug("Service will be using the following Working Directory: " + WORKING_DIRECTORY);
     }
 }

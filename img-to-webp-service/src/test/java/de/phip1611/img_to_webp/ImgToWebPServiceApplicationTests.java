@@ -2,27 +2,26 @@ package de.phip1611.img_to_webp;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import static de.phip1611.img_to_webp.IntegrationTestUtils.getTestDataFiles;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@DirtiesContext
 public class ImgToWebPServiceApplicationTests {
 
     private final Base64.Decoder base64Decoder;
@@ -36,25 +35,7 @@ public class ImgToWebPServiceApplicationTests {
 
     @Test
     public void testImageConversion() {
-        List<ImageInput> inputs = new ArrayList<>();
-        Resource[] imgResources;
-        try {
-             imgResources = new PathMatchingResourcePatternResolver(this.getClass().getClassLoader())
-                    .getResources("images/*");
-            for (Resource imgResource : imgResources) {
-                if (imgResource.isFile() && imgResource.isReadable()) {
-                    byte[] bytes = IOUtils.toByteArray(imgResource.getInputStream());
-
-                    ImageInput input = new ImageInput()
-                    .setFileExtension(getFileEnding(imgResource.getFile().toString()))
-                    .setBase64String(Base64.getEncoder().encodeToString(bytes));
-
-                    inputs.add(input);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<ImageInput> inputs = getTestDataFiles();
 
         inputs.forEach(input -> {
             ResponseEntity<ImageDto> response = restTemplate.postForEntity("/convert", input, ImageDto.class);
@@ -89,10 +70,4 @@ public class ImgToWebPServiceApplicationTests {
         Assert.assertFalse(dto1.isSuccess());
         Assert.assertFalse(dto2.isSuccess());
     }
-
-    private String getFileEnding(String path) {
-        String[] split = path.split("\\.");
-        return split[split.length - 1];
-    }
-
 }

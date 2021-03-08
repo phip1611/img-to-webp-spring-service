@@ -44,6 +44,15 @@
             <version>3.19.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- logging -->
+        <!-- same logging dependency as Spring Boot service; otherwise failures/problems -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
     </dependencies>
 
 </project>

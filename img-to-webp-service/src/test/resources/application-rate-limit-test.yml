@@ -1,0 +1,3 @@
+rate-limit:
+  rate-limit-requests-per-interval: 2 # 2 requests per 30 seconds
+  rate-limit-interval-seconds: 30 # minimum; time of scheduler

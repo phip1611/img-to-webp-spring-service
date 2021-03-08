@@ -9,13 +9,17 @@
  */
 package de.phip1611.img_to_webp.lib.service.data;
 
-import java.io.PrintStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 
 /**
  * The result of an executed process.
  */
 public class ProcessExecResult {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessExecResult.class);
 
     /**
      * Shows if there was no error.
@@ -71,8 +75,11 @@ public class ProcessExecResult {
     }
 
     public void print() {
-        PrintStream ps = this.success ? System.out : System.err;
-        ps.println(this.toString());
+        if (this.success) {
+            LOGGER.debug(this.toString());
+        } else {
+            LOGGER.error(this.toString());
+        }
     }
 
     @Override
