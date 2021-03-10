@@ -34,3 +34,4 @@ server:
 rate-limit:
   rate-limit-requests-per-interval: 1000 # 1000 requests per hour
   rate-limit-interval-seconds: 3600 # 1 hour = 60 minutes = 3600 seconds
+
