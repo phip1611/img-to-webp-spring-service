@@ -22,14 +22,14 @@ import static de.phip1611.img_to_webp.IntegrationTestUtils.getTestDataFiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext
-public class ImgToWebPServiceApplicationTests {
+public class ImgToWebPServiceIntegrationTest {
 
     private final Base64.Decoder base64Decoder;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public ImgToWebPServiceApplicationTests() {
+    public ImgToWebPServiceIntegrationTest() {
         this.base64Decoder = Base64.getDecoder();
     }
 

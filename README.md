@@ -13,12 +13,6 @@ it to the given working directory. Then cwebp is executed in this directory with
 
 The website and the REST API can be found here: https://webp.phip1611.dev
 
-## Build
-### Main
-[![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=main)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
-### Dev
-[![Build Status](https://travis-ci.com/phip1611/img-to-webp-spring-service.svg?branch=dev)](https://travis-ci.com/phip1611/img-to-webp-spring-service)
-
 ## REST-Interface
 
 ### Input: `POST-Request` to `/convert`
