@@ -17,5 +17,9 @@ jobs:
           distribution: 'adopt'
       - name: Install webp converter
         run: sudo apt-get update && sudo apt-get install webp
-      - name: Build with Maven and execute tests
-        run: mvn --batch-mode --update-snapshots install
+      - name: Maven Build
+        run: mvn --batch-mode --update-snapshots package
+      - name: Unit Tests
+        run: mvn --batch-mode --update-snapshots test
+      - name: Integration Tests
+        run: mvn --batch-mode --update-snapshots integration-test
