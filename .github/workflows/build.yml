@@ -1,0 +1,21 @@
+name: Java/Maven CI
+
+on: [ push, pull_request ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Install webp converter
+        run: sudo apt-get update && sudo apt-get install webp
+      - name: Build with Maven and execute tests
+        run: mvn --batch-mode --update-snapshots install
