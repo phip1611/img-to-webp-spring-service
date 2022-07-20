@@ -31,7 +31,7 @@ import java.util.List;
 @DirtiesContext
 public class RateLimitIntegrationTest {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(RateLimitIntegrationTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RateLimitIntegrationTest.class);
 
     @Autowired
     private RateLimitConfiguration rateLimitConfiguration;
