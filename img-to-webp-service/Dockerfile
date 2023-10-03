@@ -1,5 +1,5 @@
-FROM eclipse-temurin:17-jre-alpine
+# Based on the minimum LTS version supported by this service.
+FROM eclipse-temurin:11-jre-alpine
 RUN apk update && apk add libwebp-tools # install cwebp
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
+COPY target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
