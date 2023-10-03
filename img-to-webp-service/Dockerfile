@@ -5,8 +5,6 @@ ENV PATH="${PATH}:${PWD}/libwebp-1.2.0-linux-x86-64/bin/"
 # from https://hub.docker.com/r/adoptopenjdk/openjdk11/
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
-ARG DEPENDENCY=target/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","de.phip1611.img_to_webp.ImgToWebPServiceApplication"]
+ARG JAR_FILE
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
