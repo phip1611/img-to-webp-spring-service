@@ -7,7 +7,7 @@
     <version>2.6.0</version>
     <packaging>jar</packaging>
     <name>Image to WebP Converter Service</name>
-    <description>A spring REST-service + web service (website) that converts images to webp.</description>
+    <description>A Spring REST-service + website that converts images to webp.</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -92,22 +92,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-
-                <!-- seems like this starts up the regular application instead of the spring boot test -->
-                <!--<executions>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
             </plugin>
 
             <plugin>
