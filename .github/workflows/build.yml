@@ -48,3 +48,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./build-docker.sh
+
+  nix_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v24
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix build .#\jar
+      - run: nix build .#\serviceScript
+      - run: nix build .#\serviceScriptBin
+      - run: nix build .#\dockerImage
+      - run: nix flake check
