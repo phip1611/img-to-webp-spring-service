@@ -6,7 +6,7 @@
 let
   lib = pkgs.lib;
   javaToolchain = import ./java-toolchain.nix {
-    inherit (pkgs) jdk11 jdk21 temurin-jre-bin-11 maven libwebp which;
+    inherit (pkgs) jdk21 temurin-jre-bin-21 maven libwebp which;
   };
   mavenProject = pkgs.callPackage ./build.nix {
     maven = javaToolchain.minimum.mavenWithJdk;
