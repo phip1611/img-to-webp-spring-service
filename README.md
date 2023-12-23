@@ -38,6 +38,10 @@ The website and the REST API can be found here: https://webp.phip1611.dev
 
 ## Build and Run
 
+### Minimum Supported Java Version
+
+The minimum supported Java version is Java 21.
+
 ### Nix
 
 To build the project via the Nix flake:

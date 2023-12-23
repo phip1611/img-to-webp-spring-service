@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.phip1611.img-to-webp</groupId>
     <artifactId>img-to-webp</artifactId>
-    <version>2.6.0</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
-    <name>Image to Webp Converter</name>
+    <name>Image to WebP Converter</name>
 
     <modules>
         <module>img-to-webp-lib</module>

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.phip1611.img-to-webp</groupId>
     <artifactId>img-to-webp-service</artifactId>
-    <version>2.6.0</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
     <name>Image to WebP Converter Service</name>
     <description>A Spring REST-service + website that converts images to webp.</description>
@@ -12,15 +12,15 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <version>3.2.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
-        <img-to-webp-lib.version>2.6.0</img-to-webp-lib.version>
+        <java.version>21</java.version>
+        <img-to-webp-lib.version>3.0.0</img-to-webp-lib.version>
     </properties>
 
     <dependencies>
