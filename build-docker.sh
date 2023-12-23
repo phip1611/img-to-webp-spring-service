@@ -1,9 +1,12 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 
-set -e
-mvn clean install
+set -euo pipefail
+
+# Build the JAR file.
+mvn clean package -DskipTests=true
+
 cd ./img-to-webp-service
-# from: https://spring.io/guides/gs/spring-boot-docker/
-mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+echo "building Docker image 'phip1611/img-to-webp-service'"
 docker build -t phip1611/img-to-webp-service .
 echo "built Docker image 'phip1611/img-to-webp-service'"
