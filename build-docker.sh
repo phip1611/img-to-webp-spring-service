@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Build the JAR file.
-mvn clean package -DskipTests=true
+mvn -DskipTests=true clean package
 
 cd ./img-to-webp-service
 
