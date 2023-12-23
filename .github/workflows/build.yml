@@ -22,7 +22,7 @@ jobs:
       - name: Integration Tests
         run: mvn --batch-mode --update-snapshots integration-test
       - name: Upload Web-App
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: target
           path: img-to-webp-service/target
