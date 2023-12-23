@@ -8,7 +8,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, nixpkgs-unstable, ... }:
+  outputs = inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       # Output taken from pkgs.lib.systems.flakeExposed
       systems = [
@@ -47,7 +47,6 @@
             serviceScript = project.serviceScript;
             serviceScriptBin = project.serviceScriptBin;
             # Docker image.
-            # 
             dockerImage = project.dockerImage;
           };
 
