@@ -10,20 +10,7 @@
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # Output taken from pkgs.lib.systems.flakeExposed
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "armv6l-linux"
-        "armv7l-linux"
-        "i686-linux"
-        "mipsel-linux"
-        "aarch64-darwin"
-        "armv5tel-linux"
-        "powerpc64le-linux"
-        "riscv64-linux"
-      ];
+      systems = nixpkgs.lib.systems.flakeExposed;
 
       perSystem = { config, self', inputs', pkgs, system, ... }:
         let
