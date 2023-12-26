@@ -32,8 +32,8 @@ let
     java --version
     java -jar ${jar}
   '';
-  serviceScript = pkgs.writeShellScript "img-to-webp-service-script" script;
-  serviceScriptBin = pkgs.writeShellScriptBin "img-to-webp-service-script-bin" script;
+  serviceScript = pkgs.writeShellScript mavenProject.pname script;
+  serviceScriptBin = pkgs.writeShellScriptBin mavenProject.pname script;
 
   # The image can be imported by using:
   # `$ docker load < ./result`
