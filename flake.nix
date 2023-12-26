@@ -59,6 +59,11 @@
           formatter = pkgs.nixpkgs-fmt;
         };
 
-      flake = { };
+      flake = {
+        nixosModules = rec {
+          default = img-to-webp-service;
+          img-to-webp-service = import ./nix/modules/img-to-webp-service.nix;
+        };
+      };
     };
 }

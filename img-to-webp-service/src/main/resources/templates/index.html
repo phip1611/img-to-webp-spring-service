@@ -55,7 +55,7 @@
         </div>
     </nav>
 
-    <section th:include="inc/__${page}__"></section>
+    <section th:insert="~{inc/__${page}__}"></section>
 
     <footer class="footer container text-center mb-1 mt-5">
         <p>&copy; Philipp Schuster <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> - We don't collect any data. Cached images will be deleted after 5 Minutes.</p>
