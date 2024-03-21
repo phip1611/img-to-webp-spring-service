@@ -5,7 +5,8 @@
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    # TODO use nixos-24.05
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
