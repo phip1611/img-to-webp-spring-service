@@ -1,11 +1,13 @@
-# This flake builds the spring service.
+# This flake builds the Img to WebP Spring web service.
 
 {
   description = "Image To WebP Spring Service";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    # TODO: switch to branch "nixos-24.05" after June 1st.
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
