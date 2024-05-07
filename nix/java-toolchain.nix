@@ -28,8 +28,5 @@ rec {
     libwebp
     which
   ];
-  testDeps = [
-    libwebp
-    which
-  ];
+  testDeps = runtimeDeps ++ [ ];
 }

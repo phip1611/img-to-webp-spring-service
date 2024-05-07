@@ -10,7 +10,7 @@ let
   };
   mavenProject = pkgs.callPackage ./build.nix {
     maven = javaToolchain.minimum.mavenWithJdk;
-    testDeps = javaToolchain.testDeps;
+    inherit (javaToolchain) testDeps runtimeDeps;
   };
   jar = pkgs.runCommandLocal "img-to-webp-service-jar" { } ''
     # By copying here instead of using a symlink, I reduce the closure size by

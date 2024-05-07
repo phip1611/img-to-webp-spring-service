@@ -4,6 +4,7 @@
 { lib
 , maven
 , testDeps
+, runtimeDeps
 }:
 
 let
@@ -31,7 +32,7 @@ maven.buildMavenPackage {
   mvnHash = "sha256-D4c90nm5tx/ye7DzIxlphWPVOfSmzBbzeQHTid3Ps0M=";
   # mvnHash = "sha256-0000000000000000000000000000000000000000000=";
 
-  nativeBuildInputs = [ testDeps ];
+  nativeBuildInputs = [ runtimeDeps ];
 
   installPhase = ''
     runHook preInstall
