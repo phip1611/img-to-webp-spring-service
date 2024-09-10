@@ -27,7 +27,7 @@
 
           # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
           packages = rec {
-            default = jar;
+            default = serviceScriptBin;
             # Spring service as jar file.
             jar = project.jar;
             # Shell script that starts the JAR and ensures necessary runtime

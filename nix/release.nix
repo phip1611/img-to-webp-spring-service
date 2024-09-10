@@ -34,8 +34,8 @@ let
     java --version
     java -jar ${jar}
   '';
-  serviceScript = pkgs.writeShellScript mavenProject.pname script;
-  serviceScriptBin = pkgs.writeShellScriptBin mavenProject.pname script;
+  serviceScript = pkgs.writeShellScript "${mavenProject.pname}-script" script;
+  serviceScriptBin = pkgs.writeShellScriptBin "${mavenProject.pname}-script-bin" script;
 
   # The image can be imported by using:
   # `$ docker load < ./result`
