@@ -29,7 +29,7 @@ maven.buildMavenPackage {
   };
 
   # Hash of Maven dependencies.
-  mvnHash = "sha256-spexMNd2dqmaEuf9jX3wcCButv6DC/ulJNUrMbu5JNA=";
+  mvnHash = "sha256-rIUlQsVFiYtLYLpqDkiiUso2tJF3vL/Mj3haWIEFz0Y=";
 
   nativeBuildInputs = [ runtimeDeps ];
 
