@@ -36,6 +36,8 @@
             serviceScriptBin = project.serviceScriptBin;
             # Docker image.
             dockerImage = project.dockerImage;
+            mavenProject = project.mavenProject;
+            mavenProjectLatest = project.mavenProjectLatest;
           };
 
           devShells = rec {
