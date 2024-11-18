@@ -6,7 +6,7 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
@@ -27,7 +27,7 @@
 
           # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
           packages = rec {
-            default = jar;
+            default = serviceScriptBin;
             # Spring service as jar file.
             jar = project.jar;
             # Shell script that starts the JAR and ensures necessary runtime
@@ -36,13 +36,15 @@
             serviceScriptBin = project.serviceScriptBin;
             # Docker image.
             dockerImage = project.dockerImage;
+            mavenProject = project.mavenProject;
+            mavenProjectLatest = project.mavenProjectLatest;
           };
 
           devShells = rec {
             default = javaMinimum;
             javaMinimum = pkgs.mkShell {
               packages = [
-                javaToolchain.minimum.jdk
+                javaToolchain.minimum.jdk_headless
                 javaToolchain.minimum.mavenWithJdk
               ] ++ javaToolchain.testDeps
               ;
@@ -50,7 +52,7 @@
             # Latest stable Java version.
             javaLatest = pkgs.mkShell {
               packages = [
-                javaToolchain.latest.jdk
+                javaToolchain.latest.jdk_headless
                 javaToolchain.latest.mavenWithJdk
               ] ++ javaToolchain.testDeps
               ;

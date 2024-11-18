@@ -5,11 +5,13 @@
 
 let
   lib = pkgs.lib;
-  javaToolchain = import ./java-toolchain.nix {
-    inherit (pkgs) jdk21 temurin-jre-bin-21 maven libwebp which;
-  };
+  javaToolchain = pkgs.callPackage ./java-toolchain.nix { };
   mavenProject = pkgs.callPackage ./build.nix {
     maven = javaToolchain.minimum.mavenWithJdk;
+    inherit (javaToolchain) testDeps runtimeDeps;
+  };
+  mavenProjectLatest = pkgs.callPackage ./build.nix {
+    maven = javaToolchain.latest.mavenWithJdk;
     inherit (javaToolchain) testDeps runtimeDeps;
   };
   jar = pkgs.runCommandLocal "img-to-webp-service-jar" { } ''
@@ -32,8 +34,8 @@ let
     java --version
     java -jar ${jar}
   '';
-  serviceScript = pkgs.writeShellScript mavenProject.pname script;
-  serviceScriptBin = pkgs.writeShellScriptBin mavenProject.pname script;
+  serviceScript = pkgs.writeShellScript "${mavenProject.pname}-script" script;
+  serviceScriptBin = pkgs.writeShellScriptBin "${mavenProject.pname}-script-bin" script;
 
   # The image can be imported by using:
   # `$ docker load < ./result`
@@ -53,6 +55,6 @@ let
   };
 in
 {
-  inherit mavenProject jar javaToolchain;
+  inherit mavenProject mavenProjectLatest jar javaToolchain;
   inherit serviceScript serviceScriptBin dockerImage;
 }

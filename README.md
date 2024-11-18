@@ -40,7 +40,8 @@ The website and the REST API can be found here: https://webp.phip1611.dev
 
 ### Minimum Supported Java Version
 
-The minimum supported Java version is Java 21.
+The minimum supported Java version to build and run the project is Java 17.
+<!-- Spring Boot requests that version. -->
 
 ### Nix
 
