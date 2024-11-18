@@ -6,7 +6,7 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
@@ -42,7 +42,7 @@
             default = javaMinimum;
             javaMinimum = pkgs.mkShell {
               packages = [
-                javaToolchain.minimum.jdk
+                javaToolchain.minimum.jdk_headless
                 javaToolchain.minimum.mavenWithJdk
               ] ++ javaToolchain.testDeps
               ;
@@ -50,7 +50,7 @@
             # Latest stable Java version.
             javaLatest = pkgs.mkShell {
               packages = [
-                javaToolchain.latest.jdk
+                javaToolchain.latest.jdk_headless
                 javaToolchain.latest.mavenWithJdk
               ] ++ javaToolchain.testDeps
               ;
