@@ -35,7 +35,7 @@ in
         Environment = [
           "SERVER_PORT=${toString cfg.port}"
         ];
-        ExecStart = "${cfg.package}/bin/img-to-webp-service";
+        ExecStart = "${cfg.package}/bin/img-to-webp-service-script-bin";
         ExecStop = "${pkgs.coreutils}/bin/kill $MAINPID";
         Restart = "always";
       };
