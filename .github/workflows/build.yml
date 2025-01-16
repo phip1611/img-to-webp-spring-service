@@ -4,41 +4,20 @@ on: [ push, pull_request, merge_group ]
 
 jobs:
 
-  build_regular_java_minimum:
-    name: build (regular, minimum Java version)
+  build_regular:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Minimum and latest
+        version: [ 17, 18, 19, 20, 21, 22, 23 ]
+    name: build (regular, Java ${{ matrix.version }})
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up JDK ${{ matrix.version }}
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
-      - name: Install webp converter
-        run: sudo apt-get update && sudo apt-get install webp
-      - name: Maven Build
-        run: mvn --batch-mode --update-snapshots package
-      - name: Unit Tests
-        run: mvn --batch-mode --update-snapshots test
-      - name: Integration Tests
-        run: mvn --batch-mode --update-snapshots integration-test
-      - name: Upload Maven Artifacts of Spring Service
-        uses: actions/upload-artifact@v4
-        with:
-          name: service-maven-artifacts
-          path: img-to-webp-service/target
-
-  # Todo currently makes mostly no sense, but soon this tests Java 22
-  build_regular_java_latest:
-    name: build (regular, latest Java version)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 23
-        uses: actions/setup-java@v4
-        with:
-          java-version: '23'
+          java-version: '${{ matrix.version }}'
           distribution: 'temurin'
           cache: 'maven'
       - name: Install webp converter
@@ -54,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     name: build (docker image)
     needs:
-      - build_regular_java_minimum
+      - build_regular
     steps:
       - uses: actions/checkout@v4
       - name: Download Maven Artifacts of Spring Service
