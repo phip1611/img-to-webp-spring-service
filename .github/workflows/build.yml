@@ -13,7 +13,7 @@ jobs:
     name: build (regular, Java ${{ matrix.version }})
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up JDK ${{ matrix.version }}
         uses: actions/setup-java@v4
         with:
@@ -35,7 +35,7 @@ jobs:
     needs:
       - build_regular
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Download Maven Artifacts of Spring Service
         uses: actions/download-artifact@v4
         with:
@@ -47,7 +47,7 @@ jobs:
     name: build (Nix)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v30
       - run: nix build .#\jar
       - run: nix build .#\serviceScript
