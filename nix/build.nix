@@ -29,7 +29,7 @@ maven.buildMavenPackage {
   };
 
   # Hash of Maven dependencies.
-  mvnHash = "sha256-TnCvZPSXFHtUUGvXICajla/7kLiwNJmD+oX+XxN/tzg=";
+  mvnHash = "sha256-2qIXI0NAPALj/sCNo9VGMfZnVlR7y9rykYTIK3VB8Ws=";
 
   nativeBuildInputs = [ runtimeDeps ];
 
@@ -40,7 +40,7 @@ maven.buildMavenPackage {
 
     # Copy "a/target" and "b/target" to $out
     find . -type d -name target | xargs -I {} cp --parents -r {} $out
-
+n
     runHook postInstall
   '';
 }
