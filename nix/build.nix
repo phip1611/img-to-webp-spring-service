@@ -40,7 +40,7 @@ maven.buildMavenPackage {
 
     # Copy "a/target" and "b/target" to $out
     find . -type d -name target | xargs -I {} cp --parents -r {} $out
-n
+
     runHook postInstall
   '';
 }
