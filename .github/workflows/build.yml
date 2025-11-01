@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download Maven Artifacts of Spring Service
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: service-maven-artifacts
           path: img-to-webp-service/target
