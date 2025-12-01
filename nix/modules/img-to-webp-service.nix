@@ -1,6 +1,11 @@
 # NixOS module that exports the img-to-webp service as systemd service.
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.services.img-to-webp-service;

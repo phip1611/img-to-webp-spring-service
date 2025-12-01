@@ -1,7 +1,8 @@
 # The release.nix exports all relevant modules of this repo.
 
-
-{ pkgs ? import <nixpkgs> { } }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
   lib = pkgs.lib;
@@ -23,10 +24,14 @@ let
   script = ''
     set -euo pipefail
 
-    export PATH="${lib.makeBinPath ([
-              javaToolchain.minimum.jre
-      	  ] ++ javaToolchain.runtimeDeps)
-      	}:$PATH";
+    export PATH="${
+      lib.makeBinPath (
+        [
+          javaToolchain.minimum.jre
+        ]
+        ++ javaToolchain.runtimeDeps
+      )
+    }:$PATH";
 
     echo "Starting ${mavenProject.pname} ..."
     echo
@@ -49,12 +54,20 @@ let
       paths = [
         serviceScriptBin
       ];
-      pathsToLink = [ "/bin" "/tmp" ];
+      pathsToLink = [
+        "/bin"
+        "/tmp"
+      ];
     };
     config.Cmd = [ "/bin/img-to-webp-service-script-bin" ];
   };
 in
 {
-  inherit mavenProject mavenProjectLatest jar javaToolchain;
+  inherit
+    mavenProject
+    mavenProjectLatest
+    jar
+    javaToolchain
+    ;
   inherit serviceScript serviceScriptBin dockerImage;
 }

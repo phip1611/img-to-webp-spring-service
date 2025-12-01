@@ -1,10 +1,10 @@
 # Builds the maven project.
 
-
-{ lib
-, maven
-, testDeps
-, runtimeDeps
+{
+  lib,
+  maven,
+  testDeps,
+  runtimeDeps,
 }:
 
 let

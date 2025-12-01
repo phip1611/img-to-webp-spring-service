@@ -1,13 +1,14 @@
 # Exports the Java toolchain.
 
-{ jdk17_headless # Minimum
-, jdk23_headless # Latest
-, maven
-, temurin-jre-bin-17 # Minimum
-, temurin-jre-bin-23 # Latest
+{
+  jdk17_headless, # Minimum
+  jdk23_headless, # Latest
+  maven,
+  temurin-jre-bin-17, # Minimum
+  temurin-jre-bin-23, # Latest
   # Test deps
-, libwebp
-, which
+  libwebp,
+  which,
 }:
 
 rec {
