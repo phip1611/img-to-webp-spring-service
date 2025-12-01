@@ -13,7 +13,7 @@ in
 maven.buildMavenPackage {
   inherit pname;
   name = "${pname}-maven-project";
-  version = "3.0.0";
+  version = "4.0.0-SNAPSHOT";
   src = lib.sourceByRegex ../. [
     "^img-to-webp-service.*"
     "^img-to-webp-lib.*"
