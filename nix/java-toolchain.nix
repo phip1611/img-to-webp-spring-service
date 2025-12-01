@@ -2,10 +2,10 @@
 
 {
   jdk17_headless, # Minimum
-  jdk23_headless, # Latest
+  jdk25_headless, # Latest
   maven,
   temurin-jre-bin-17, # Minimum
-  temurin-jre-bin-23, # Latest
+  temurin-jre-bin-25, # Latest
   # Test deps
   libwebp,
   which,
@@ -22,8 +22,8 @@ rec {
   };
   # Latest stable version.
   latest = rec {
-    jre = temurin-jre-bin-23;
-    jdk_headless = jdk23_headless;
+    jre = temurin-jre-bin-25;
+    jdk_headless = jdk25_headless;
     mavenWithJdk = maven.override {
       inherit jdk_headless;
     };
