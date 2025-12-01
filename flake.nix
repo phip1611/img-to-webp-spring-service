@@ -4,69 +4,63 @@
   description = "Image To WebP Spring Service";
 
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs =
+    inputs@{ nixpkgs, ... }:
+    let
       systems = nixpkgs.lib.systems.flakeExposed;
+      forAllSystems =
+        function: nixpkgs.lib.genAttrs systems (system: function nixpkgs.legacyPackages.${system});
 
-      perSystem = { config, self', inputs', pkgs, system, ... }:
-        let
-          project = import ./nix/release.nix {
-            inherit pkgs;
-          };
-          javaToolchain = project.javaToolchain;
-        in
-        rec {
-          # Per-system attributes can be defined here. The self' and inputs'
-          # module parameters provide easy access to attributes of the same
-          # system.
-
-          # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-          packages = rec {
-            default = serviceScriptBin;
-            # Spring service as jar file.
-            jar = project.jar;
-            # Shell script that starts the JAR and ensures necessary runtime
-            # dependencies.
-            serviceScript = project.serviceScript;
-            serviceScriptBin = project.serviceScriptBin;
-            # Docker image.
-            dockerImage = project.dockerImage;
-            mavenProject = project.mavenProject;
-            mavenProjectLatest = project.mavenProjectLatest;
-          };
-
-          devShells = rec {
-            default = javaMinimum;
-            javaMinimum = pkgs.mkShell {
-              packages = [
-                javaToolchain.minimum.jdk_headless
-                javaToolchain.minimum.mavenWithJdk
-              ] ++ javaToolchain.testDeps
-              ;
-            };
-            # Latest stable Java version.
-            javaLatest = pkgs.mkShell {
-              packages = [
-                javaToolchain.latest.jdk_headless
-                javaToolchain.latest.mavenWithJdk
-              ] ++ javaToolchain.testDeps
-              ;
-            };
-          };
-
-          formatter = pkgs.nixpkgs-fmt;
+      project =
+        pkgs:
+        import ./nix/release.nix {
+          inherit pkgs;
         };
+      javaToolchain = pkgs: (project pkgs).javaToolchain;
+    in
+    {
+      packages = forAllSystems (pkgs: rec {
+        default = serviceScriptBin;
+        # Spring service as jar file.
+        jar = (project pkgs).jar;
+        # Shell script that starts the JAR and ensures necessary runtime
+        # dependencies.
+        serviceScript = (project pkgs).serviceScript;
+        serviceScriptBin = (project pkgs).serviceScriptBin;
+        # Docker image.
+        dockerImage = (project pkgs).dockerImage;
+        mavenProject = (project pkgs).mavenProject;
+        mavenProjectLatest = (project pkgs).mavenProjectLatest;
+      });
 
-      flake = {
-        nixosModules = rec {
-          default = img-to-webp-service;
-          img-to-webp-service = import ./nix/modules/img-to-webp-service.nix;
+      devShells = forAllSystems (pkgs: rec {
+        default = javaMinimum;
+        javaMinimum = pkgs.mkShell {
+          packages = [
+            (javaToolchain pkgs).minimum.jdk_headless
+            (javaToolchain pkgs).minimum.mavenWithJdk
+          ]
+          ++ (javaToolchain pkgs).testDeps;
         };
+        # Latest stable Java version.
+        javaLatest = pkgs.mkShell {
+          packages = [
+            (javaToolchain pkgs).latest.jdk_headless
+            (javaToolchain pkgs).latest.mavenWithJdk
+          ]
+          ++ (javaToolchain pkgs).testDeps;
+        };
+      });
+
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
+
+      nixosModules = rec {
+        default = img-to-webp-service;
+        img-to-webp-service = import ./nix/modules/img-to-webp-service.nix;
       };
     };
+
 }
