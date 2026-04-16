@@ -6,13 +6,16 @@ import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
 import de.phip1611.img_to_webp.lib.service.data.WebpConvertOutput;
 import de.phip1611.img_to_webp.lib.service.impl.WebpConvertServiceImpl;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
 import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MIN_FILE_SIZE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WebpConvertServiceTest {
 
@@ -22,7 +25,7 @@ public class WebpConvertServiceTest {
 
     private File jpegTestFile = null;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.service      = new WebpConvertServiceImpl();
         this.jpegTestFile = this.getJpegTestFile();
@@ -31,22 +34,12 @@ public class WebpConvertServiceTest {
 
     @Test
     public void testNullPointerInputs() {
-        try {
-            this.builder.fileExt(null);
-            Assert.fail();
-        } catch (NullPointerException ignored) {}
-
-        try {
-            this.builder.data(null);
-            Assert.fail();
-        } catch (NullPointerException ignored) {}
+        assertThrows(NullPointerException.class, () -> this.builder.fileExt(null));
+        assertThrows(NullPointerException.class, () -> this.builder.data(null));
 
         this.builder.data(); // empty array, not a NPE
 
-        try {
-            this.builder.uuid(null);
-            Assert.fail();
-        } catch (NullPointerException ignored) {}
+        assertThrows(NullPointerException.class, () -> this.builder.uuid(null));
 
     }
 
@@ -64,29 +57,26 @@ public class WebpConvertServiceTest {
         this.buildAndCatchIllegalInputExceptionHelper();
 
         this.builder.data(new byte[MIN_FILE_SIZE]);
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.quality(-1);
-        try {
-            Assert.assertNull(this.builder.build());
-            Assert.fail();
-        } catch (IllegalStateException ignored) {}
+        assertThrows(IllegalStateException.class, () -> this.builder.build());
 
         this.builder.quality(0);
         this.buildAndCatchIllegalInputExceptionHelper();
 
         this.builder.quality(1);
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.quality(100);
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.quality(101);
         this.buildAndCatchIllegalInputExceptionHelper();
 
         this.builder.quality(80);  // reset to valid value
         this.builder.fileExt("jpg");
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.fileExt("");
         this.buildAndCatchIllegalInputExceptionHelper();
@@ -108,26 +98,23 @@ public class WebpConvertServiceTest {
 
         this.builder.fileExt("jpg");
 
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.fileExt("JPG");
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.fileExt("JpG");
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.fileExt("tiFF");
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
 
         this.builder.fileExt("PNG");
-        Assert.assertNotNull(this.builder.build());
+        assertNotNull(this.builder.build());
     }
 
     private void buildAndCatchIllegalInputExceptionHelper() {
-        try {
-            Assert.assertNull(builder.build());
-            Assert.fail();
-        } catch (IllegalStateException ignored) {}
+        assertThrows(IllegalStateException.class, () -> builder.build());
     }
 
     @Test
@@ -135,11 +122,11 @@ public class WebpConvertServiceTest {
         byte[] data = IOUtils.toByteArray(new FileInputStream(this.jpegTestFile));
         this.builder.data(data).quality(86).fileExt("jpg");
         WebpConvertInput input = this.builder.build();
-        Assert.assertNotNull(input); // actually I'm testing immutables lib here!
+        assertNotNull(input); // actually I'm testing immutables lib here!
 
         WebpConvertOutput output = this.service.convert(input, this.getTmpDir());
 
-        Assert.assertTrue(output.isSuccess());
+        assertTrue(output.isSuccess());
     }
 
     @Test
@@ -148,12 +135,12 @@ public class WebpConvertServiceTest {
 
         this.builder.data(data).fileExt("jpg");
         WebpConvertInput input = this.builder.build();
-        Assert.assertNotNull(input); // actually I'm testing immutables lib here!
-        Assert.assertEquals(WebpConvertInput.DEFAULT_QUALITY, input.getQuality());
+        assertNotNull(input); // actually I'm testing immutables lib here!
+        assertEquals(WebpConvertInput.DEFAULT_QUALITY, input.getQuality());
 
         WebpConvertOutput output = this.service.convert(input, this.getTmpDir());
 
-        Assert.assertTrue(output.isSuccess());
+        assertTrue(output.isSuccess());
     }
 
     /**

@@ -3,11 +3,13 @@ package de.phip1611.img_to_webp.lib;
 import de.phip1611.img_to_webp.lib.service.data.ProcessExecResult;
 import de.phip1611.img_to_webp.lib.service.api.ProcessExecService;
 import de.phip1611.img_to_webp.lib.service.impl.ProcessExecServiceImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProcessExecServiceTest {
 
@@ -22,7 +24,7 @@ public class ProcessExecServiceTest {
         // else assume we are on a unix system (that has which installed)
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.service = new ProcessExecServiceImpl();
     }
@@ -31,15 +33,15 @@ public class ProcessExecServiceTest {
     public void testHasCwebpCommandOnThisSystem1() {
         ProcessExecResult x = service.exec(whichCommandForSystem + " cwebp", System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
-        Assert.assertTrue(x.isSuccess());
-        Assert.assertFalse(x.getStdOut().isEmpty()); // Unix gibt "" zurück, wenn es bspw cwebp nicht gibt
+        assertTrue(x.isSuccess());
+        assertFalse(x.getStdOut().isEmpty()); // Unix gibt "" zurück, wenn es bspw cwebp nicht gibt
     }
 
     @Test
     public void testHasCwebpCommandOnThisSystem2() {
         ProcessExecResult x = service.exec("cwebp -version", System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
-        Assert.assertTrue(x.isSuccess());
+        assertTrue(x.isSuccess());
     }
 
     @Test
@@ -47,7 +49,7 @@ public class ProcessExecServiceTest {
         String command = whichCommandForSystem + " " + whichCommandForSystem;
         ProcessExecResult x = service.exec(command, System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
-        Assert.assertTrue(x.isSuccess());
+        assertTrue(x.isSuccess());
     }
 
     // good test to check proper debug output
@@ -57,24 +59,24 @@ public class ProcessExecServiceTest {
         String command = "foobarfoobar12345678";
         ProcessExecResult x = service.exec(command, System.getProperty("user.dir"));
         x.print(); // Wichtiger Output um Probleme auf Systemen zu debuggen, daher immer
-        Assert.assertFalse(x.isSuccess());
+        assertFalse(x.isSuccess());
     }
 
     @Test
     public void testCommandIsAvailable() {
         var x = service.commandIsAvailable(this.whichCommandForSystem);
-        Assert.assertTrue(x);
+        assertTrue(x);
     }
 
     @Test
     public void testMalformedCommandIsAvailable() {
         // Command is malformed
         var x = service.commandIsAvailable(UUID.randomUUID().toString());
-        Assert.assertFalse(x);
+        assertFalse(x);
 
         // Command is malformed
         x = service.commandIsAvailable(this.whichCommandForSystem + " && " + this.whichCommandForSystem);
-        Assert.assertFalse(x);
+        assertFalse(x);
     }
 
 }

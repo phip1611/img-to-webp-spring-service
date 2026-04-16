@@ -2,24 +2,27 @@ package de.phip1611.img_to_webp;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Base64;
 import java.util.List;
 
 import static de.phip1611.img_to_webp.IntegrationTestUtils.getTestDataFiles;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
 @DirtiesContext
 public class ImgToWebPServiceIntegrationTest {
@@ -41,14 +44,14 @@ public class ImgToWebPServiceIntegrationTest {
             ResponseEntity<ImageDto> response = restTemplate.postForEntity("/convert", input, ImageDto.class);
             ImageDto dto = response.getBody();
 
-            Assert.assertEquals(200, response.getStatusCodeValue());
-            Assert.assertNotNull(dto);
-            Assert.assertTrue(dto.isSuccess());
-            Assert.assertNotNull(dto.getBase64String());
+            assertEquals(200, response.getStatusCode().value());
+            assertNotNull(dto);
+            assertTrue(dto.isSuccess());
+            assertNotNull(dto.getBase64String());
             // Die nächste Zeile deckt den fehler ab den ich hatte, dass ich das ursprungsbild im
             // original wieder rausgegeben habe!
-            Assert.assertNotEquals(input.getBase64String(), dto.getBase64String());
-            Assert.assertTrue(base64Decoder.decode(dto.getBase64String()).length > 10);
+            assertNotEquals(input.getBase64String(), dto.getBase64String());
+            assertTrue(base64Decoder.decode(dto.getBase64String()).length > 10);
         });
     }
 
@@ -63,11 +66,11 @@ public class ImgToWebPServiceIntegrationTest {
         ImageDto dto1 = res1.getBody();
         ImageDto dto2 = res2.getBody();
 
-        Assert.assertEquals(200, res1.getStatusCodeValue());
-        Assert.assertEquals(200, res2.getStatusCodeValue());
-        Assert.assertNotNull(dto1);
-        Assert.assertNotNull(dto2);
-        Assert.assertFalse(dto1.isSuccess());
-        Assert.assertFalse(dto2.isSuccess());
+        assertEquals(200, res1.getStatusCode().value());
+        assertEquals(200, res2.getStatusCode().value());
+        assertNotNull(dto1);
+        assertNotNull(dto2);
+        assertFalse(dto1.isSuccess());
+        assertFalse(dto2.isSuccess());
     }
 }
