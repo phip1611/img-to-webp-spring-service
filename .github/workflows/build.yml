@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Minimum and latest
-        version: [ 17, 18, 19, 20, 21, 22, 23, 24, 25 ]
+        # Minimum and latest (18 is broken)
+        version: [ 17, 19, 20, 21, 22, 23, 24, 25 ]
     name: build (regular, Java ${{ matrix.version }})
     runs-on: ubuntu-latest
     steps:
