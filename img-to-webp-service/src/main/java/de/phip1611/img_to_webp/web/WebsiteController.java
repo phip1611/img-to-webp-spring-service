@@ -11,10 +11,14 @@ package de.phip1611.img_to_webp.web;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
 import de.phip1611.img_to_webp.service.api.ImageService;
 import de.phip1611.img_to_webp.service.api.RateLimitService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Controller
@@ -88,28 +93,30 @@ public class WebsiteController {
                                  HttpServletRequest request,
                                  HttpServletResponse response) throws IOException {
         if (!consent) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getOutputStream().write("Check consent checkmark!".getBytes());
+            writeBadRequest(response, "Check consent checkmark!");
             return;
         }
         if (file.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getOutputStream().write("No file specified!".getBytes());
+            writeBadRequest(response, "No file specified!");
+            return;
+        }
+        if (quality < 1 || quality > 100) {
+            writeBadRequest(response, "Invalid quality!");
             return;
         }
 
         this.rateLimitService.assertRequest(request);
 
-        response.setContentType("image/webp");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
-
         if (file.getContentType() == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getOutputStream().write("Invalid Content Type!".getBytes());
+            writeBadRequest(response, "Invalid Content Type!");
             return;
         }
         String[] split = file.getContentType().split("/");
         String fileExt = split[split.length - 1];
+        if (!WebpConvertInput.AllowedFileType.isAllowed(fileExt)) {
+            writeBadRequest(response, "Unsupported image type!");
+            return;
+        }
 
         ImageInput input = new ImageInput();
         input.setQuality((byte)quality);
@@ -117,10 +124,44 @@ public class WebsiteController {
         input.setFileExtension(fileExt);
 
         ImageDto dto = this.imageService.convert(input);
+        if (!dto.isSuccess()) {
+            writeBadRequest(response, "Image conversion failed!");
+            return;
+        }
         byte[] data = Base64.getDecoder().decode(dto.getBase64String());
+        response.setContentType(MediaType.valueOf("image/webp").toString());
+        response.setHeader(
+                HttpHeaders.CONTENT_DISPOSITION,
+                ContentDisposition.attachment()
+                        .filename(safeDownloadFileName(file.getOriginalFilename()))
+                        .build()
+                        .toString()
+        );
         OutputStream os = response.getOutputStream();
         os.write(data);
         response.flushBuffer();
+    }
+
+    private void writeBadRequest(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        response.getOutputStream().write(message.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String safeDownloadFileName(String originalFilename) {
+        String fileName = originalFilename == null ? "" : originalFilename.replace('\\', '/');
+        int lastPathSeparator = fileName.lastIndexOf('/');
+        if (lastPathSeparator >= 0) {
+            fileName = fileName.substring(lastPathSeparator + 1);
+        }
+        fileName = fileName.replaceAll("[^A-Za-z0-9._-]", "_");
+        if (fileName.isBlank() || ".".equals(fileName) || "..".equals(fileName)) {
+            fileName = "converted";
+        }
+        if (fileName.length() > 100) {
+            fileName = fileName.substring(0, 100);
+        }
+        return fileName + ".webp";
     }
 
     /*@ExceptionHandler(RateLimitException.class)

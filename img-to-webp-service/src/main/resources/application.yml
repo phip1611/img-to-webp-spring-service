@@ -1,27 +1,32 @@
 spring:
   servlet:
     multipart:
-      # maximum of 25MB
-      max-request-size: 25MB
-      max-file-size: 25MB
+      # keep this aligned with WebpConvertInput.MAX_FILE_SIZE
+      max-request-size: 10MB
+      max-file-size: 10MB
 
 
-# activate all debug logging
 logging:
   level:
-    de.phip1611: DEBUG
+    de.phip1611: INFO
 
-# activate actuator web endpoint
-# SECURE THIS IN REVERSE PROXY
+# Actuator is public. Only expose a minimal health check and never include
+# details that could reveal configuration, request history, paths, or internals.
 management:
   endpoints:
     web:
+      discovery:
+        enabled: false
       exposure:
-        include: "*"
+        include: "health"
   endpoint:
     health:
-      # activate health endpoints
-      show-details: always
+      show-details: never
+      show-components: never
+    env:
+      show-values: never
+    configprops:
+      show-values: never
 
 # this runs behind a reverse proxy
 # always resolve forwarded headers
@@ -34,4 +39,3 @@ server:
 rate-limit:
   rate-limit-requests-per-interval: 1000 # 1000 requests per hour
   rate-limit-interval-seconds: 3600 # 1 hour = 60 minutes = 3600 seconds
-

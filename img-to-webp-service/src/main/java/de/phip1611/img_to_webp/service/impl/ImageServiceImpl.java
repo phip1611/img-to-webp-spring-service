@@ -17,6 +17,8 @@ import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
 import de.phip1611.img_to_webp.lib.service.data.WebpConvertOutput;
 import de.phip1611.img_to_webp.service.api.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -25,6 +27,8 @@ import static de.phip1611.img_to_webp.config.WorkingDirectoryConfig.WORKING_DIRE
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
     private final WebpConvertService webpConvertService;
 
@@ -38,9 +42,8 @@ public class ImageServiceImpl implements ImageService {
         WebpConvertInput webpInput;
         try {
             webpInput = this.transformInputForWebp(input);
-        } catch (IllegalStateException ex) {
-            System.err.println("Input is not valid! It's: " + input.toString());
-            System.err.println("Exception message: " + ex.getMessage());
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            LOGGER.debug("Rejecting invalid image input: {}", ex.getMessage());
             return ImageDto.failureDto();
         }
 
@@ -55,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
 
     public WebpConvertInput transformInputForWebp(ImageInput input) {
         return ImmutableWebpConvertInput.builder()
-                .data(Base64.getDecoder().decode(input.getBase64String().getBytes()))
+                .data(Base64.getDecoder().decode(input.getBase64String()))
                 .fileExt(input.getFileExtension())
                 .quality(input.getQuality())
                 .build();

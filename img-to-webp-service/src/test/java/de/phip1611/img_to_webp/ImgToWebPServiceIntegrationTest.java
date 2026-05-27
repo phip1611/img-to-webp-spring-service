@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import static de.phip1611.img_to_webp.IntegrationTestUtils.getTestDataFiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,5 +74,19 @@ public class ImgToWebPServiceIntegrationTest {
         assertNotNull(dto2);
         assertFalse(dto1.isSuccess());
         assertFalse(dto2.isSuccess());
+    }
+
+    @Test
+    public void testPublicActuatorDoesNotExposeSensitiveDetails() {
+        ResponseEntity<Map> health = restTemplate.getForEntity("/actuator/health", Map.class);
+
+        assertEquals(HttpStatus.OK, health.getStatusCode());
+        assertNotNull(health.getBody());
+        assertEquals("UP", health.getBody().get("status"));
+        assertFalse(health.getBody().containsKey("components"));
+        assertFalse(health.getBody().containsKey("details"));
+
+        ResponseEntity<String> env = restTemplate.getForEntity("/actuator/env", String.class);
+        assertEquals(HttpStatus.NOT_FOUND, env.getStatusCode());
     }
 }

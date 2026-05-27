@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 /**
  * Ein Input für ein Image.
@@ -26,6 +27,12 @@ public class ImageInput {
     public static final byte DEFAULT_WEBP_QUALITY = 82;
 
     /**
+     * Maximum length of a base64 string that can represent the library's
+     * 10 MiB binary image limit.
+     */
+    public static final int MAX_BASE64_IMAGE_LENGTH = 13_981_016;
+
+    /**
      * File extension.
      */
     @NotEmpty
@@ -36,6 +43,7 @@ public class ImageInput {
      * Base64 representation of the image.
      */
     @NotEmpty
+    @Size(max = MAX_BASE64_IMAGE_LENGTH)
     private String base64String;
 
     /**

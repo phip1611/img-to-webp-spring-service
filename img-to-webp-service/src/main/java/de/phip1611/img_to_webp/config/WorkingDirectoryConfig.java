@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Set;
 
 /**
  * Holds the directory where all the operations will be made.
@@ -42,6 +46,7 @@ public class WorkingDirectoryConfig {
                 System.exit(-1);
             }
         }
+        restrictWorkingDirectoryPermissions();
 
         if (!WORKING_DIRECTORY.canRead()) {
             LOGGER.error("Service can't read the Working Directory");
@@ -54,5 +59,22 @@ public class WorkingDirectoryConfig {
         }
 
         LOGGER.debug("Service will be using the following Working Directory: " + WORKING_DIRECTORY);
+    }
+
+    private void restrictWorkingDirectoryPermissions() {
+        try {
+            Files.setPosixFilePermissions(
+                    WORKING_DIRECTORY.toPath(),
+                    Set.of(
+                            PosixFilePermission.OWNER_READ,
+                            PosixFilePermission.OWNER_WRITE,
+                            PosixFilePermission.OWNER_EXECUTE
+                    )
+            );
+        } catch (UnsupportedOperationException e) {
+            LOGGER.debug("POSIX file permissions are not supported for the Working Directory");
+        } catch (IOException e) {
+            LOGGER.warn("Could not restrict Working Directory permissions", e);
+        }
     }
 }

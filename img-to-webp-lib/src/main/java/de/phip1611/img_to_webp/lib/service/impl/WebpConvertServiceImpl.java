@@ -14,16 +14,22 @@ import de.phip1611.img_to_webp.lib.service.api.WebpConvertService;
 import de.phip1611.img_to_webp.lib.service.data.ProcessExecResult;
 import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
 import de.phip1611.img_to_webp.lib.service.data.WebpConvertOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Set;
 
 /**
  * {@inheritDoc}
  */
 public class WebpConvertServiceImpl implements WebpConvertService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebpConvertServiceImpl.class);
 
     private final ProcessExecService execService;
 
@@ -39,35 +45,38 @@ public class WebpConvertServiceImpl implements WebpConvertService {
     @Override
     public WebpConvertOutput convert(WebpConvertInput input, File workingDirectory) {
         if (input == null) {
-            System.err.println("Input is null!");
+            LOGGER.warn("Input is null");
             return WebpConvertOutput.failure();
         }
 
         var res = this.checkWorkingDirectoryWorks(workingDirectory);
         if (!res) {
-            System.err.println("Working directory is not useable! Is: " + workingDirectory.getPath());
-            return WebpConvertOutput.failure();
-        } else {
-            System.out.println("Using working directory: " + workingDirectory.getPath());
-        }
-
-        boolean writeSuc = this.writeSourceFileToWorkingDirectory(input, workingDirectory);
-        if (!writeSuc) {
-            System.err.println("Could not write source file to working directory!");
-            return WebpConvertOutput.failure();
-        } else {
-            System.out.println("Wrote source file successfully to working directory!");
-        }
-
-        ProcessExecResult execResult = this.execService.exec(this.buildCommandString(input), workingDirectory);
-        execResult.print();
-        if (!execResult.isSuccess()) {
+            LOGGER.error("Working directory is not useable");
             return WebpConvertOutput.failure();
         }
+        LOGGER.debug("Using working directory: {}", workingDirectory.getPath());
 
-        byte[] data = this.readTargetFileFromWorkingDirectory(input, workingDirectory);
+        try {
+            boolean writeSuc = this.writeSourceFileToWorkingDirectory(input, workingDirectory);
+            if (!writeSuc) {
+                LOGGER.error("Could not write source file to working directory");
+                return WebpConvertOutput.failure();
+            }
+            LOGGER.debug("Wrote source file successfully to working directory");
 
-        return new WebpConvertOutput(data, input.getQuality());
+            ProcessExecResult execResult = this.execService.exec(this.buildCommandString(input), workingDirectory);
+            execResult.print();
+            if (!execResult.isSuccess()) {
+                return WebpConvertOutput.failure();
+            }
+
+            byte[] data = this.readTargetFileFromWorkingDirectory(input, workingDirectory);
+
+            return new WebpConvertOutput(data, input.getQuality());
+        } finally {
+            deleteWorkingFile(workingDirectory, input.getSourceFile());
+            deleteWorkingFile(workingDirectory, input.getTargetFile());
+        }
     }
 
     private byte[] readTargetFileFromWorkingDirectory(WebpConvertInput input, File workingDirectory) {
@@ -75,8 +84,7 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         try {
             return Files.readAllBytes(webpOut.toPath());
         } catch (IOException e) {
-            System.err.println("Failure reading target file: " + webpOut.getPath());
-            e.printStackTrace();
+            LOGGER.error("Failure reading target file", e);
         }
         return new byte[0];
     }
@@ -92,10 +100,36 @@ public class WebpConvertServiceImpl implements WebpConvertService {
         File destinationFile = this.combineWorkingDirectoryAndFile(workingDirectory, input.getSourceFile());
         try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
             fos.write(input.getData());
+            restrictFilePermissions(destinationFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failure writing source file", e);
         }
         return destinationFile.isFile() && destinationFile.getTotalSpace() > 0;
+    }
+
+    private void restrictFilePermissions(File file) {
+        try {
+            Files.setPosixFilePermissions(
+                    file.toPath(),
+                    Set.of(
+                            PosixFilePermission.OWNER_READ,
+                            PosixFilePermission.OWNER_WRITE
+                    )
+            );
+        } catch (UnsupportedOperationException e) {
+            LOGGER.debug("POSIX file permissions are not supported for working files");
+        } catch (IOException e) {
+            LOGGER.warn("Could not restrict working file permissions", e);
+        }
+    }
+
+    private void deleteWorkingFile(File workingDirectory, File file) {
+        File workingFile = this.combineWorkingDirectoryAndFile(workingDirectory, file);
+        try {
+            Files.deleteIfExists(workingFile.toPath());
+        } catch (IOException e) {
+            LOGGER.warn("Could not delete working file {}", workingFile.getName(), e);
+        }
     }
 
     /**

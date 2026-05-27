@@ -23,9 +23,7 @@ public class CorsWebConfig implements WebMvcConfigurer {
     private final String[] allowedMethods = {
             "GET",
             "POST",
-            "PUT",
-            "DELETE",
-            "PATCH"
+            "OPTIONS"
     };
 
     @Override

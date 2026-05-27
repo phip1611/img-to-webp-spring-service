@@ -15,6 +15,8 @@ The website and the REST API can be found here: https://webp.phip1611.dev
 
 ## REST-Interface
 
+Maximum decoded image size is 10 MiB.
+
 ### Input: `POST-Request` to `/convert`
 ```
 {

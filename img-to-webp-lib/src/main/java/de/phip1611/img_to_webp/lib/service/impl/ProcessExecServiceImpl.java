@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@inheritDoc}
@@ -24,6 +25,8 @@ import java.util.Optional;
 public class ProcessExecServiceImpl implements ProcessExecService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessExecServiceImpl.class);
+
+    private static final int PROCESS_TIMEOUT_SECONDS = 30;
 
     private final Runtime runtime;
 
@@ -48,17 +51,28 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         try {
             LOGGER.debug("Executing: '" + command + "' in '" + workingDirectory.getPath() + "'");
             process = runtime.exec(command, null, workingDirectory);
-            exitCode = process.waitFor(); // Warten bis Prozess durchgelaufen ist, dannach geht es weiter.
-            if (exitCode != 0) {
-                LOGGER.error("Execution failed, Code: " + exitCode);
+            boolean finished = process.waitFor(PROCESS_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            if (!finished) {
+                process.destroyForcibly();
+                stackTrace = Optional.of("Process timed out after " + PROCESS_TIMEOUT_SECONDS + " seconds");
+                LOGGER.error("Execution timed out after {} seconds", PROCESS_TIMEOUT_SECONDS);
             } else {
-                success = true;
+                exitCode = process.exitValue();
+                if (exitCode != 0) {
+                    LOGGER.error("Execution failed, Code: " + exitCode);
+                } else {
+                    success = true;
+                }
             }
         } catch (IOException e) {
             LOGGER.error("Failure during execution!");
             stackTrace = Optional.of(e.getMessage());
         } catch (InterruptedException e) {
             LOGGER.error("Failure during waiting for process to finish!!");
+            Thread.currentThread().interrupt();
+            if (process != null) {
+                process.destroyForcibly();
+            }
             stackTrace = Optional.of(e.getMessage());
         } finally {
             // when there was no exception
@@ -98,7 +112,7 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         command = command.trim();
         boolean isAllowed = this.checkTestCommandAllowed(command);
         if (!isAllowed) {
-            System.err.println("Command not allowed for testing! A-z, 0-9, 1 <= length <= 20, no spaces, no &&!");
+            LOGGER.warn("Command not allowed for testing! A-z, 0-9, 1 <= length <= 20, no spaces, no &&!");
             return false;
         }
 
@@ -106,14 +120,14 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         if (someDir == null) {
             someDir = System.getProperty("java.io.tmpdir");
             if (someDir == null) {
-                System.err.println("Can't retrieve any directory on the system to run a command in!");
+                LOGGER.warn("Can't retrieve any directory on the system to run a command in!");
             }
             return false;
         }
 
         File someDirFile = new File(someDir);
         if (!someDirFile.isDirectory()) {
-            System.err.println("Can't retrieve any directory on the system to run a command in!");
+            LOGGER.warn("Can't retrieve any directory on the system to run a command in!");
             return false;
         }
 
@@ -147,7 +161,7 @@ public class ProcessExecServiceImpl implements ProcessExecService {
         if (command.length() < 1 || command.length() > 20) {
             return false;
         }
-        return command.matches("(([A-z])*([0-9])*)*");
+        return command.matches("[A-Za-z0-9]+");
     }
 
     private Optional<String> stdToString(InputStream is) {

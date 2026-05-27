@@ -35,64 +35,67 @@ public class RateLimitServiceImpl implements RateLimitService, HealthIndicator {
     @Override
     public synchronized void assertRequest(HttpServletRequest request) throws RateLimitException {
         lock.lock();
+        try {
+            var hashedIp = getIpHash(request);
+            if (!ipHashToAccessTimesMap.containsKey(hashedIp)) {
+                ipHashToAccessTimesMap.put(hashedIp, new ArrayList<>());
+            }
+            var list = ipHashToAccessTimesMap.get(hashedIp);
 
-        var hashedIp = getIpHash(request);
-        if (!ipHashToAccessTimesMap.containsKey(hashedIp)) {
-            ipHashToAccessTimesMap.put(hashedIp, new ArrayList<>());
-        }
-        var list = ipHashToAccessTimesMap.get(hashedIp);
+            var timeThreshold = LocalDateTime.now()
+                    .minusSeconds(
+                            config.getRateLimitIntervalSeconds()
+                    );
+            var count = (int) list.stream().filter(t -> t.isAfter(timeThreshold)).count();
 
-        var timeThreshold = LocalDateTime.now()
-                .minusSeconds(
-                        config.getRateLimitIntervalSeconds()
-        );
-        var count = (int) list.stream().filter(t -> t.isAfter(timeThreshold)).count();
-
-        if (count >= config.getRateLimitRequestsPerInterval()) {
-            LOGGER.debug("Rate Limit exceeded for ip hash {} - count is {}", hashedIp, count);
+            if (count >= config.getRateLimitRequestsPerInterval()) {
+                LOGGER.debug("Rate Limit exceeded for ip hash {} - count is {}", hashedIp, count);
+                throw new RateLimitException();
+            } else {
+                list.add(LocalDateTime.now());
+            }
+        } finally {
             lock.unlock();
-            throw new RateLimitException();
-        } else {
-            list.add(LocalDateTime.now());
         }
-
-        lock.unlock();
     }
 
     // once per 5 minutes
     @Scheduled(fixedDelay = 1000 * 60 * 5)
     private synchronized void deleteOld() {
         lock.lock();
-        LOGGER.debug("scheduled deletion started running");
+        try {
+            LOGGER.debug("scheduled deletion started running");
 
-        var deleteIfOlderThreshold = LocalDateTime.now()
-                .minusSeconds(
-                        config.getRateLimitIntervalSeconds()
-        );
+            var deleteIfOlderThreshold = LocalDateTime.now()
+                    .minusSeconds(
+                            config.getRateLimitIntervalSeconds()
+                    );
 
-        ipHashToAccessTimesMap.forEach((ipHash, accessTimes) -> {
-            var deletions = 0;
-            // list is strictly monotonic
-            while (true) {
-                if (accessTimes.isEmpty()) {
-                    break;
+            ipHashToAccessTimesMap.forEach((ipHash, accessTimes) -> {
+                var deletions = 0;
+                // list is strictly monotonic
+                while (true) {
+                    if (accessTimes.isEmpty()) {
+                        break;
+                    }
+
+                    var accessTime = accessTimes.get(0);
+                    if (accessTime.isBefore(deleteIfOlderThreshold)) {
+                        accessTimes.remove(0);
+                        deletions++;
+                    } else {
+                        break;
+                    }
                 }
-
-                var accessTime = accessTimes.get(0);
-                if (accessTime.isBefore(deleteIfOlderThreshold)) {
-                    accessTimes.remove(0);
-                    deletions++;
-                } else {
-                    break;
+                if (deletions > 0) {
+                    LOGGER.debug("Deleted {} outdated requests for IP-hash {}", deletions, ipHash);
                 }
-            }
-            if (deletions > 0) {
-                LOGGER.debug("Deleted {} outdated requests for IP-hash {}", deletions, ipHash);
-            }
-        });
+            });
 
-        LOGGER.debug("scheduled deletion stopped running");
-        lock.unlock();
+            LOGGER.debug("scheduled deletion stopped running");
+        } finally {
+            lock.unlock();
+        }
     }
 
     private String getIpHash(HttpServletRequest request) {
@@ -102,12 +105,8 @@ public class RateLimitServiceImpl implements RateLimitService, HealthIndicator {
 
     @Override
     public Health health() {
-        Map<String, Object> details = new HashMap<>();
-        details.put("description", "IP-Hash to latest access times");
-        details.put("accesses", ipHashToAccessTimesMap);
         return new Health.Builder()
                 .status(Status.UP)
-                .withDetails(details)
                 .build();
     }
 }
