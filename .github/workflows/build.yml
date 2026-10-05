@@ -28,6 +28,13 @@ jobs:
         run: mvn --batch-mode --update-snapshots test
       - name: Integration Tests
         run: mvn --batch-mode --update-snapshots integration-test
+      - name: Upload Maven Artifacts of Spring Service
+        # Consumed by the Docker job; build with the minimum Java version.
+        if: matrix.version == 17
+        uses: actions/upload-artifact@v7
+        with:
+          name: service-maven-artifacts
+          path: img-to-webp-service/target
 
   build_docker:
     runs-on: ubuntu-latest
