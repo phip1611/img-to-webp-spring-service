@@ -6,9 +6,6 @@ import de.phip1611.img_to_webp.service.api.RateLimitService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.health.contributor.Health;
-import org.springframework.boot.health.contributor.HealthIndicator;
-import org.springframework.boot.health.contributor.Status;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
-public class RateLimitServiceImpl implements RateLimitService, HealthIndicator {
+public class RateLimitServiceImpl implements RateLimitService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RateLimitServiceImpl.class);
 
@@ -98,16 +95,5 @@ public class RateLimitServiceImpl implements RateLimitService, HealthIndicator {
     private String getIpHash(HttpServletRequest request) {
         var ip = request.getRemoteAddr();
         return DigestUtils.sha256Hex(ip);
-    }
-
-    @Override
-    public Health health() {
-        Map<String, Object> details = new HashMap<>();
-        details.put("description", "IP-Hash to latest access times");
-        details.put("accesses", ipHashToAccessTimesMap);
-        return new Health.Builder()
-                .status(Status.UP)
-                .withDetails(details)
-                .build();
     }
 }

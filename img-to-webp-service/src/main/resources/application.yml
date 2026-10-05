@@ -11,18 +11,6 @@ logging:
   level:
     de.phip1611: DEBUG
 
-# activate actuator web endpoint
-# SECURE THIS IN REVERSE PROXY
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      # activate health endpoints
-      show-details: always
-
 # this runs behind a reverse proxy
 # always resolve forwarded headers
 server:
