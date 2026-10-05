@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
+import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MAX_FILE_SIZE;
 import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MIN_FILE_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -59,6 +60,13 @@ public class WebpConvertServiceTest {
         this.builder.data(new byte[MIN_FILE_SIZE]);
         assertNotNull(this.builder.build());
 
+        this.builder.data(new byte[MAX_FILE_SIZE]);
+        this.buildAndCatchIllegalInputExceptionHelper();
+
+        this.builder.data(new byte[MAX_FILE_SIZE - 1]);
+        assertNotNull(this.builder.build());
+
+        this.builder.data(new byte[MIN_FILE_SIZE]);
         this.builder.quality(-1);
         assertThrows(IllegalStateException.class, () -> this.builder.build());
 
@@ -111,6 +119,9 @@ public class WebpConvertServiceTest {
 
         this.builder.fileExt("PNG");
         assertNotNull(this.builder.build());
+
+        this.builder.fileExt("webp");
+        assertNotNull(this.builder.build());
     }
 
     private void buildAndCatchIllegalInputExceptionHelper() {
@@ -141,6 +152,24 @@ public class WebpConvertServiceTest {
         WebpConvertOutput output = this.service.convert(input, this.getTmpDir());
 
         assertTrue(output.isSuccess());
+    }
+
+    @Test
+    public void testWebpReconversion() throws IOException {
+        byte[] data = IOUtils.toByteArray(new FileInputStream(this.jpegTestFile));
+        WebpConvertInput jpegInput = this.builder.data(data).quality(90).fileExt("jpg").build();
+        WebpConvertOutput webp = this.service.convert(jpegInput, this.getTmpDir());
+        assertTrue(webp.isSuccess());
+
+        WebpConvertInput webpInput = ImmutableWebpConvertInput.builder()
+                .data(webp.getData())
+                .quality(30)
+                .fileExt("webp")
+                .build();
+        WebpConvertOutput output = this.service.convert(webpInput, this.getTmpDir());
+
+        assertTrue(output.isSuccess());
+        assertTrue(output.getData().length < webp.getData().length);
     }
 
     /**

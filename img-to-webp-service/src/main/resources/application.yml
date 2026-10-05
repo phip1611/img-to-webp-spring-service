@@ -1,8 +1,9 @@
 spring:
   servlet:
     multipart:
-      # maximum of 25MB
-      max-request-size: 25MB
+      # WebpConvertInput.MAX_FILE_SIZE plus headroom for the other form
+      # fields; Spring's MB is MiB
+      max-request-size: 26MB
       max-file-size: 25MB
 
 
@@ -10,18 +11,6 @@ spring:
 logging:
   level:
     de.phip1611: DEBUG
-
-# activate actuator web endpoint
-# SECURE THIS IN REVERSE PROXY
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      # activate health endpoints
-      show-details: always
 
 # this runs behind a reverse proxy
 # always resolve forwarded headers
