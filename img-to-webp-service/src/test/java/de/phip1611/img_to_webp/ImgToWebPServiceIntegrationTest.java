@@ -84,9 +84,24 @@ public class ImgToWebPServiceIntegrationTest {
 
     @Test
     public void testUploadConversionFailure() {
+        ResponseEntity<String> res = this.uploadCorruptJpeg(WebpConvertInput.MIN_FILE_SIZE);
+
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+        assertNotEquals("image/webp", String.valueOf(res.getHeaders().getContentType()));
+    }
+
+    @Test
+    public void testUploadOfMaximumFileSizeReachesConverter() {
+        ResponseEntity<String> res = this.uploadCorruptJpeg(WebpConvertInput.MAX_FILE_SIZE - 1);
+
+        // Rejected by cwebp, not by the multipart size limits.
+        assertEquals("Image conversion failed!", res.getBody());
+    }
+
+    private ResponseEntity<String> uploadCorruptJpeg(int size) {
         HttpHeaders fileHeaders = new HttpHeaders();
         fileHeaders.setContentType(MediaType.IMAGE_JPEG);
-        ByteArrayResource corruptImage = new ByteArrayResource(new byte[WebpConvertInput.MIN_FILE_SIZE]) {
+        ByteArrayResource corruptImage = new ByteArrayResource(new byte[size]) {
             @Override
             public String getFilename() {
                 return "corrupt.jpg";
@@ -97,9 +112,6 @@ public class ImgToWebPServiceIntegrationTest {
         body.add("quality", 82);
         body.add("consent", true);
 
-        ResponseEntity<String> res = restTemplate.postForEntity("/upload", body, String.class);
-
-        assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-        assertNotEquals("image/webp", String.valueOf(res.getHeaders().getContentType()));
+        return restTemplate.postForEntity("/upload", body, String.class);
     }
 }

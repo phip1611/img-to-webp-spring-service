@@ -38,7 +38,7 @@ public interface WebpConvertInput {
     /**
      * Maximum file size.
      */
-    int MAX_FILE_SIZE = 10485760; // 10 MebiByte
+    int MAX_FILE_SIZE = 25 * 1024 * 1024;
 
     /**
      * Default Quality for conversion.

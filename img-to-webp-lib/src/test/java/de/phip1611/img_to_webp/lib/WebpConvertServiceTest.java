@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
+import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MAX_FILE_SIZE;
 import static de.phip1611.img_to_webp.lib.service.data.WebpConvertInput.MIN_FILE_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -59,6 +60,13 @@ public class WebpConvertServiceTest {
         this.builder.data(new byte[MIN_FILE_SIZE]);
         assertNotNull(this.builder.build());
 
+        this.builder.data(new byte[MAX_FILE_SIZE]);
+        this.buildAndCatchIllegalInputExceptionHelper();
+
+        this.builder.data(new byte[MAX_FILE_SIZE - 1]);
+        assertNotNull(this.builder.build());
+
+        this.builder.data(new byte[MIN_FILE_SIZE]);
         this.builder.quality(-1);
         assertThrows(IllegalStateException.class, () -> this.builder.build());
 
