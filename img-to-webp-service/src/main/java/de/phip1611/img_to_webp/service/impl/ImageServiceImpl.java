@@ -50,6 +50,10 @@ public class ImageServiceImpl implements ImageService {
         }
 
         WebpConvertOutput output = this.webpConvertService.convert(webpInput, WORKING_DIRECTORY);
+        if (!output.isSuccess()) {
+            LOGGER.info("Conversion failed for input {}", input);
+            return ImageDto.failureDto();
+        }
 
         return new ImageDto()
                 .setQuality((byte)output.getQuality())
