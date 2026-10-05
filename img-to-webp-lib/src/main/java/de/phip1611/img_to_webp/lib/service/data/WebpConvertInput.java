@@ -46,7 +46,7 @@ public interface WebpConvertInput {
     int DEFAULT_QUALITY = 82;
 
     enum AllowedFileType {
-        JPEG, JPG, PNG, TIFF;
+        JPEG, JPG, PNG, TIFF, WEBP;
 
         public static boolean isAllowed(String fileExt) {
             return List.of(AllowedFileType.values()).stream()
