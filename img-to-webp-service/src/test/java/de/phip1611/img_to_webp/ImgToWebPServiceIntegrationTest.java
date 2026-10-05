@@ -2,14 +2,22 @@ package de.phip1611.img_to_webp;
 
 import de.phip1611.img_to_webp.dto.ImageDto;
 import de.phip1611.img_to_webp.input.ImageInput;
+import de.phip1611.img_to_webp.lib.service.data.WebpConvertInput;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Base64;
 import java.util.List;
@@ -72,5 +80,26 @@ public class ImgToWebPServiceIntegrationTest {
         assertNotNull(dto2);
         assertFalse(dto1.isSuccess());
         assertFalse(dto2.isSuccess());
+    }
+
+    @Test
+    public void testUploadConversionFailure() {
+        HttpHeaders fileHeaders = new HttpHeaders();
+        fileHeaders.setContentType(MediaType.IMAGE_JPEG);
+        ByteArrayResource corruptImage = new ByteArrayResource(new byte[WebpConvertInput.MIN_FILE_SIZE]) {
+            @Override
+            public String getFilename() {
+                return "corrupt.jpg";
+            }
+        };
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new HttpEntity<>(corruptImage, fileHeaders));
+        body.add("quality", 82);
+        body.add("consent", true);
+
+        ResponseEntity<String> res = restTemplate.postForEntity("/upload", body, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+        assertNotEquals("image/webp", String.valueOf(res.getHeaders().getContentType()));
     }
 }

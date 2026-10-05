@@ -100,9 +100,6 @@ public class WebsiteController {
 
         this.rateLimitService.assertRequest(request);
 
-        response.setContentType("image/webp");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
-
         if (file.getContentType() == null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.getOutputStream().write("Invalid Content Type!".getBytes());
@@ -117,6 +114,14 @@ public class WebsiteController {
         input.setFileExtension(fileExt);
 
         ImageDto dto = this.imageService.convert(input);
+        if (!dto.isSuccess()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.getOutputStream().write("Image conversion failed!".getBytes());
+            return;
+        }
+
+        response.setContentType("image/webp");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getOriginalFilename() + ".webp\"");
         byte[] data = Base64.getDecoder().decode(dto.getBase64String());
         OutputStream os = response.getOutputStream();
         os.write(data);
