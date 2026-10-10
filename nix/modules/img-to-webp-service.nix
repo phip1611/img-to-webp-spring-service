@@ -80,6 +80,16 @@ in
         ];
         SocketBindAllow = [ "tcp:${toString cfg.port}" ];
         SocketBindDeny = [ "any" ];
+
+        LockPersonality = true;
+        # The JIT compiler of the JVM needs W+X memory.
+        MemoryDenyWriteExecute = false;
+        SystemCallArchitectures = "native";
+        SystemCallFilter = [
+          "@system-service"
+          "~@privileged"
+          "~@resources"
+        ];
       };
     };
   };
