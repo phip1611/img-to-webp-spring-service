@@ -62,6 +62,17 @@ in
         # Only the JRE, which, and cwebp are executed, all from the Nix store.
         NoExecPaths = [ "/" ];
         ExecPaths = [ "/nix/store" ];
+
+        PrivateIPC = true;
+        PrivatePIDs = true;
+        ProtectClock = true;
+        ProtectControlGroups = "strict";
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
       };
     };
   };
