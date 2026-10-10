@@ -54,6 +54,14 @@ in
         AmbientCapabilities = lib.optional (cfg.port < 1024) "CAP_NET_BIND_SERVICE";
         CapabilityBoundingSet = if cfg.port < 1024 then "CAP_NET_BIND_SERVICE" else "";
         PrivateUsers = cfg.port >= 1024;
+
+        PrivateDevices = true;
+        ProtectHome = true;
+        ProtectProc = "invisible";
+        ProcSubset = "pid";
+        # Only the JRE, which, and cwebp are executed, all from the Nix store.
+        NoExecPaths = [ "/" ];
+        ExecPaths = [ "/nix/store" ];
       };
     };
   };
