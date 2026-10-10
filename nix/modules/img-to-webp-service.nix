@@ -44,6 +44,10 @@ in
         Restart = "always";
         # The JVM exits with 128 + SIGTERM on a regular stop.
         SuccessExitStatus = 143;
+
+        # Hardening
+        DynamicUser = true;
+        UMask = "0077";
       };
     };
   };
