@@ -37,7 +37,7 @@ let
     echo
     echo "Using Java:"
     java --version
-    java -jar ${jar}
+    exec java -jar ${jar}
   '';
   serviceScript = pkgs.writeShellScript "${mavenProject.pname}-script" script;
   serviceScriptBin = pkgs.writeShellScriptBin "${mavenProject.pname}-script-bin" script;
