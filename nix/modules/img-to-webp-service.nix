@@ -48,6 +48,12 @@ in
         # Hardening
         DynamicUser = true;
         UMask = "0077";
+
+        # Binding to privileged ports requires a capability that is only
+        # effective in the initial user namespace.
+        AmbientCapabilities = lib.optional (cfg.port < 1024) "CAP_NET_BIND_SERVICE";
+        CapabilityBoundingSet = if cfg.port < 1024 then "CAP_NET_BIND_SERVICE" else "";
+        PrivateUsers = cfg.port >= 1024;
       };
     };
   };
