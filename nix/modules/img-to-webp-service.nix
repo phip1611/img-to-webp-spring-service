@@ -73,6 +73,13 @@ in
         ProtectKernelTunables = true;
         RestrictNamespaces = true;
         RestrictRealtime = true;
+
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+        ];
+        SocketBindAllow = [ "tcp:${toString cfg.port}" ];
+        SocketBindDeny = [ "any" ];
       };
     };
   };
