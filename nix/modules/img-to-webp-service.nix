@@ -35,7 +35,7 @@ in
       description = "Img to WebP Image Convert Spring Web Service";
       wantedBy = [ "default.target" ];
       serviceConfig = {
-        type = "simple";
+        Type = "simple";
         # https://stackoverflow.com/questions/21083170/how-to-configure-port-for-a-spring-boot-application
         Environment = [
           "SERVER_PORT=${toString cfg.port}"
