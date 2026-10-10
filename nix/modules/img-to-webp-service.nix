@@ -14,7 +14,7 @@ in
 {
   options = {
     services.img-to-webp-service = {
-      enable = lib.mkEnableOption "Enable the img-to-webp-service systemd service";
+      enable = lib.mkEnableOption "the img-to-webp-service systemd service";
       package = lib.mkOption {
         type = lib.types.package;
         description = "The package to use.";
