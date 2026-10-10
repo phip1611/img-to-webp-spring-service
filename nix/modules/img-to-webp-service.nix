@@ -42,6 +42,8 @@ in
         ];
         ExecStart = "${cfg.package}/bin/img-to-webp-service-script-bin";
         Restart = "always";
+        # The JVM exits with 128 + SIGTERM on a regular stop.
+        SuccessExitStatus = 143;
       };
     };
   };
